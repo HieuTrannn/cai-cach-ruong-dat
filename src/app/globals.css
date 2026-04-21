@@ -54,7 +54,9 @@ body {
   line-height: 1.6;
   
   /* Cinematic Vignette Background */
-  background-image: radial-gradient(circle at center, #2a221d 0%, #12100e 80%);
+  background-image: radial-gradient(circle at center, rgba(42, 34, 29, 0.7) 0%, rgba(18, 16, 14, 0.95) 100%), url('/images/background.jpg');
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
 }
 

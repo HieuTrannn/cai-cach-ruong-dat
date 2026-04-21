@@ -277,7 +277,7 @@ export function gameReducer(
 
       if (allRevealed) {
         newStatus = "event_completed";
-        message = `Tất cả 9 ô đã mở! Sự kiện: "${currentEvt.displayTitle}"`;
+        message = `Tất cả ô đã mở! Sự kiện: "${currentEvt.displayTitle}"`;
         newEvents = state.events.map((evt, i) => {
           if (i !== evtIndex) return evt;
           return { ...evt, isCompleted: true };

@@ -15,7 +15,7 @@ Cả lớp chia thành các nhóm. Đại diện nhóm giơ tay để giành quy
 5. Cơ chế game
 Game gồm 2 sự kiện lịch sử.
 Mỗi sự kiện tương ứng với 1 bức ảnh bí ẩn.
-Mỗi bức ảnh được chia thành 9 mảnh ghép theo lưới 3x3.
+Sự kiện 1 có 12 mảnh ghép (lưới 4x3), Sự kiện 2 có 9 mảnh ghép (lưới 3x3).
 Luồng chơi:
 1. MC chiếu ảnh đang bị che kín bởi 9 ô.
 2. Một nhóm chọn 1 ô bất kỳ.
@@ -42,19 +42,19 @@ ________________
 
 
 8. Hai sự kiện nên dùng trong game
-Sự kiện 1
+Sự kiện 1 (12 mảnh ghép — lưới 4x3)
 
-Nông dân phấn khởi mua sắm đồ dùng gia đình sau khi được chia ruộng trong Cải cách ruộng đất.
+Chủ tịch Hồ Chí Minh đọc báo cáo tại kỳ họp thứ III, Quốc hội khóa I, thông qua Luật Cải cách ruộng đất (12/1953).
 
-Sự kiện này phản ánh một kết quả tích cực ban đầu của Cải cách ruộng đất: một bộ phận nông dân được chia ruộng, đời sống và tinh thần có chuyển biến, từ đó tạo nên sự phấn khởi trong sinh hoạt và lao động.
-Ý nghĩa sư phạm của vòng 1 là giúp người chơi hiểu rằng không thể đánh giá Cải cách ruộng đất chỉ bằng một chiều tiêu cực; cần phân biệt giữa mục tiêu đúng và những sai lầm xảy ra trong quá trình thực hiện.
+Sự kiện này thể hiện bối cảnh chính trị và pháp lý của cải cách ruộng đất. Nó giúp người chơi hiểu rằng cải cách ruộng đất ban đầu là một chủ trương lớn được ban hành trong hoàn cảnh lịch sử cụ thể, không phải tự phát.
+Ý nghĩa sư phạm của vòng 1 là giúp người chơi phân biệt giữa mục tiêu ban đầu của chủ trương và những sai lầm nghiêm trọng trong quá trình thực hiện.
 
-Sự kiện 2
+Sự kiện 2 (9 mảnh ghép — lưới 3x3)
 
-Chủ tịch Hồ Chí Minh nói chuyện tại Hội nghị toàn quốc tổng kết công tác sửa chữa những sai lầm trong quá trình thực hiện Cải cách ruộng đất (tháng 12/1957).
+Chủ tịch Hồ Chí Minh thăm Hợp tác xã Hùng Sơn, huyện Đại Từ, tỉnh Thái Nguyên (1954).
 
-Sự kiện này thể hiện giai đoạn Đảng và Chủ tịch Hồ Chí Minh trực tiếp kiểm điểm, tổng kết và sửa chữa những sai lầm đã xảy ra trong quá trình thực hiện Cải cách ruộng đất.
-Ý nghĩa sư phạm của vòng 2 là nhấn mạnh rằng Đảng đã mắc sai lầm trong nhận thức, lãnh đạo, chỉ đạo và tổ chức thực hiện, nhưng đồng thời cũng thể hiện tinh thần thẳng thắn nhận trách nhiệm, sửa sai và khắc phục hậu quả.
+Sự kiện này gợi mở bối cảnh nông thôn Việt Nam trong thời kỳ cải cách ruộng đất, đồng thời nhấn mạnh yêu cầu phải bám sát thực tiễn quần chúng.
+Ý nghĩa sư phạm của vòng 2 là giúp người chơi thấy rằng một trong những sai lầm lớn của Đảng trong cải cách ruộng đất là thiếu điều tra cụ thể, đánh giá tình hình nông thôn không toàn diện, có biểu hiện chủ quan, máy móc và mệnh lệnh trong chỉ đạo thực hiện.
 ________________
 
 
@@ -70,9 +70,9 @@ Nói gọn:
 ________________
 
 
-10. Bộ 18 câu hỏi cho 18 mảnh ghép
+10. Bộ 21 câu hỏi cho 21 mảnh ghép
 
-Sự kiện 1 — 9 câu hỏi
+Sự kiện 1 — 12 câu hỏi
 
 Hướng kiến thức của cụm này:
 bối cảnh cải cách ruộng đất
@@ -80,7 +80,7 @@ mục tiêu ban đầu
 sai lầm trong nhận thức và tổ chức thực hiện
 để người chơi dần hiểu vấn đề, nhưng chưa lộ ảnh
 
-Câu 1
+Câu 1 (Ô số 1)
 Trong nhìn nhận chính thức, cải cách ruộng đất được xác định là:
 A. Một chủ trương hoàn toàn sai từ đầu
 B. Một chủ trương đúng và cần thiết trong hoàn cảnh lịch sử lúc bấy giờ
@@ -88,7 +88,7 @@ C. Một quyết định mang tính tự phát
 D. Một chính sách không liên quan đến nông dân
 Đáp án: B
 
-Câu 2
+Câu 2 (Ô số 2)
 Một trong những mục tiêu lớn của cải cách ruộng đất là:
 A. Mở rộng thương mại quốc tế
 B. Tăng thuế nông thôn
@@ -96,7 +96,7 @@ C. Giải quyết vấn đề ruộng đất cho nông dân
 D. Tập trung hóa toàn bộ sản xuất ngay lập tức
 Đáp án: C
 
-Câu 3
+Câu 3 (Ô số 3)
 Sai lầm nghiêm trọng đầu tiên trong cải cách ruộng đất là:
 A. Không ban hành văn bản nào
 B. Đánh giá tình hình nông thôn không toàn diện
@@ -104,7 +104,7 @@ C. Không huy động nông dân
 D. Không tổ chức đội công tác
 Đáp án: B
 
-Câu 4
+Câu 4 (Ô số 4)
 Một biểu hiện sai lầm trong thực hiện cải cách ruộng đất là:
 A. Đoàn kết đúng mọi tầng lớp
 B. Điều tra kỹ trước khi kết luận
@@ -112,7 +112,7 @@ C. Mở rộng diện đả kích quá mức
 D. Tăng cường đối thoại dân chủ ở mọi nơi
 Đáp án: C
 
-Câu 5
+Câu 5 (Ô số 5)
 Trong phân loại giai cấp ở nông thôn, sai lầm nổi bật là:
 A. Phân loại quá chậm
 B. Không phân loại gì cả
@@ -120,7 +120,7 @@ C. Quy sai thành phần của một số người
 D. Chỉ phân loại theo tuổi tác
 Đáp án: C
 
-Câu 6
+Câu 6 (Ô số 6)
 Đối tượng nào nhiều nơi lẽ ra cần được xem xét, chiếu cố thận trọng hơn nhưng thực tế lại bị xử lý sai?
 A. Gia đình có công với cách mạng
 B. Các nhà tư sản nước ngoài
@@ -128,7 +128,7 @@ C. Công nhân thành thị
 D. Học sinh tiểu học
 Đáp án: A
 
-Câu 7
+Câu 7 (Ô số 7)
 Biểu hiện nào sau đây cho thấy sự vi phạm pháp chế và dân chủ trong quá trình thực hiện?
 A. Tôn trọng đúng quy trình điều tra
 B. Dùng biện pháp đấu tranh quá mức, xử lý oan sai
@@ -136,15 +136,15 @@ C. Luôn nghe ý kiến quần chúng đầy đủ
 D. Kiểm tra chặt chẽ trước mọi kết luận
 Đáp án: B
 
-Câu 8
-Một nguyên nhân quan trọng khiến sai lầm trở nên nghiêm trọng là:
-A. Có quá nhiều kiểm tra giám sát
-B. Thiếu điều tra, nghiên cứu cụ thể
-C. Có quá nhiều ý kiến phản biện
-D. Quá chú trọng thực tế Việt Nam
+Câu 8 (Ô số 8)
+Sắc lệnh 197/SL ban bố Luật Cải cách ruộng đất được ký vào ngày nào?
+A. 04/12/1953
+B. 19/12/1953
+C. 01/01/1954
+D. 07/05/1954
 Đáp án: B
 
-Câu 9
+Câu 9 (Ô số 9)
 Nhận định nào đúng nhất về sai lầm của Đảng trong cải cách ruộng đất?
 A. Sai hoàn toàn từ chủ trương đến mục tiêu
 B. Không có sai lầm đáng kể
@@ -152,7 +152,31 @@ C. Sai lầm chủ yếu nằm ở lãnh đạo, chỉ đạo và tổ chức th
 D. Chỉ sai ở khâu tuyên truyền
 Đáp án: C
 
-Sự kiện 2 — 9 câu hỏi
+Câu 10 (Ô số 10)
+Mốc năm nào gắn với việc bắt đầu kiểm điểm mạnh hơn về những sai lầm trong cải cách ruộng đất?
+A. 1953
+B. 1954
+C. 1955
+D. 1956
+Đáp án: D
+
+Câu 11 (Ô số 11)
+Trong quá trình thực hiện cải cách ruộng đất, hạn chế lớn về phương pháp lãnh đạo là:
+A. Quá tôn trọng thực tiễn địa phương
+B. Quá thận trọng trong xử lý
+C. Có biểu hiện chủ quan, mệnh lệnh, máy móc
+D. Không ban hành chỉ đạo nào
+Đáp án: C
+
+Câu 12 (Ô số 12)
+Vì sao việc thiếu điều tra, nghiên cứu cụ thể lại dẫn đến hậu quả nghiêm trọng?
+A. Vì làm cho việc phân loại và xử lý dễ bị sai lệch
+B. Vì khiến nông dân được chia nhiều ruộng hơn
+C. Vì làm giảm số lượng cán bộ
+D. Vì khiến luật không còn hiệu lực
+Đáp án: A
+
+Sự kiện 2 — 9 câu hỏi (Ô số 1–9)
 
 Hướng kiến thức của cụm này:
 kiểm điểm
@@ -161,7 +185,7 @@ sửa sai
 trách nhiệm chính trị của Đảng
 bài học rút ra
 
-Câu 10
+Câu 13 (Ô số 1)
 Sau khi phát hiện sai lầm trong cải cách ruộng đất, thái độ chính trị đúng đắn của Đảng là:
 A. Im lặng để tránh ảnh hưởng uy tín
 B. Phủ nhận toàn bộ trách nhiệm
@@ -169,7 +193,7 @@ C. Thẳng thắn kiểm điểm và sửa sai
 D. Chỉ giải quyết nội bộ, không thừa nhận sai lầm
 Đáp án: C
 
-Câu 11
+Câu 14 (Ô số 2)
 Một nội dung quan trọng của quá trình sửa sai là:
 A. Giữ nguyên mọi kết luận cũ
 B. Khôi phục quyền lợi và danh dự cho người bị xử lý oan
@@ -177,7 +201,7 @@ C. Tăng hình thức xử phạt
 D. Không xem xét lại hồ sơ cũ
 Đáp án: B
 
-Câu 12
+Câu 15 (Ô số 3)
 Việc sửa sai trong cải cách ruộng đất cho thấy điều gì?
 A. Đảng né tránh trách nhiệm
 B. Đảng dám nhìn thẳng vào sự thật và khắc phục sai lầm
@@ -185,7 +209,7 @@ C. Đảng phủ nhận toàn bộ cải cách ruộng đất
 D. Đảng không quan tâm đến hậu quả
 Đáp án: B
 
-Câu 13
+Câu 16 (Ô số 4)
 Một trong những nguyên nhân sâu xa dẫn đến sai lầm là:
 A. Vi phạm nguyên tắc tập trung dân chủ và lãnh đạo tập thể
 B. Quá coi trọng ý kiến quần chúng
@@ -193,7 +217,7 @@ C. Quá tôn trọng pháp luật
 D. Kiểm tra quá thường xuyên
 Đáp án: A
 
-Câu 14
+Câu 17 (Ô số 5)
 Biểu hiện nào sau đây gắn với tác phong lãnh đạo sai lầm?
 A. Dân chủ, lắng nghe, thận trọng
 B. Quan liêu, mệnh lệnh, độc đoán
@@ -201,7 +225,7 @@ C. Điều tra kỹ thực tế
 D. Luôn tham khảo nhiều chiều
 Đáp án: B
 
-Câu 15
+Câu 18 (Ô số 6)
 Mục đích của việc sửa sai không phải là:
 A. Khôi phục lòng tin của nhân dân
 B. Sửa chữa hậu quả do xử lý sai gây ra
@@ -209,7 +233,7 @@ C. Bảo vệ sự thật lịch sử
 D. Che giấu sai lầm để tránh phê bình
 Đáp án: D
 
-Câu 16
+Câu 19 (Ô số 7)
 Bài học lớn rút ra từ sai lầm trong cải cách ruộng đất là:
 A. Có thể bỏ qua điều tra thực tế
 B. Cần tôn trọng thực tiễn, thận trọng trong lãnh đạo và thực hiện
@@ -217,7 +241,7 @@ C. Chỉ cần mục tiêu đúng là đủ
 D. Có thể hy sinh pháp chế để đạt kết quả nhanh
 Đáp án: B
 
-Câu 17
+Câu 20 (Ô số 8)
 Khi nói về cải cách ruộng đất, cách nhìn nào sau đây là phù hợp nhất?
 A. Chỉ nhìn mặt tích cực, bỏ qua sai lầm
 B. Chỉ nhìn sai lầm, phủ nhận toàn bộ ý nghĩa lịch sử
@@ -225,7 +249,7 @@ C. Nhìn nhận cả mặt mục tiêu, kết quả và những sai lầm nghiê
 D. Không cần đánh giá lại
 Đáp án: C
 
-Câu 18
+Câu 21 (Ô số 9)
 Điểm đáng chú ý nhất trong quá trình sửa sai là:
 A. Đảng hoàn toàn im lặng trước nhân dân
 B. Đảng thẳng thắn nhận khuyết điểm và tiến hành sửa chữa

@@ -65,10 +65,16 @@ function DisplayContent() {
     }());
   };
 
+  const totalTiles = currentEvent?.tiles.length || 9;
+  const numCols = totalTiles > 9 ? 4 : 3;
+  const numRows = Math.ceil(totalTiles / numCols);
+
   const getBackgroundPosition = (idx: number) => {
-    const row = Math.floor((idx - 1) / 3);
-    const col = (idx - 1) % 3;
-    return `${col * 50}% ${row * 50}%`;
+    const col = (idx - 1) % numCols;
+    const row = Math.floor((idx - 1) / numCols);
+    const x = numCols > 1 ? (col * 100) / (numCols - 1) : 0;
+    const y = numRows > 1 ? (row * 100) / (numRows - 1) : 0;
+    return `${x}% ${y}%`;
   };
 
   // === WAITING & SETUP ===
@@ -195,10 +201,10 @@ function DisplayContent() {
           
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns: `repeat(${numCols}, 1fr)`,
             gap: "4px",
-            width: "60vh",
-            height: "60vh",
+            width: `${numCols === 4 ? 66.6 : 50}vh`,
+            height: "50vh",
             background: "var(--bg-secondary)", // Grout color
             border: "4px solid #3a2e24",
             boxShadow: "0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5)",
@@ -236,7 +242,7 @@ function DisplayContent() {
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
                     backgroundImage: `url(${imageUrl})`,
-                    backgroundSize: '300% 300%',
+                    backgroundSize: `${numCols * 100}% ${numRows * 100}%`,
                     backgroundPosition: bgPos,
                     filter: 'sepia(30%) contrast(110%) brightness(90%)' // vintage feel
                   }} />
@@ -245,25 +251,25 @@ function DisplayContent() {
             })}
           </div>
           <div style={{ textAlign: "center", marginTop: "1.5rem", fontSize: "1.2rem", letterSpacing: '1px', color: 'var(--text-secondary)' }}>
-            Tiến độ: <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>{revealedCount}/9</span> mảnh ghép
+            Tiến độ: <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>{revealedCount}/{totalTiles}</span> mảnh ghép
           </div>
         </div>
 
         {/* RIGHT: SCOREBOARD & STATUS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1, maxWidth: '400px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1, maxWidth: '400px' }}>
           
-          <div className="glass-panel animate-slide-up" style={{ padding: '2rem' }}>
-            <h3 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", textAlign: 'center', textTransform: 'uppercase', color: 'var(--text-gold)', letterSpacing: '2px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+          <div className="glass-panel animate-slide-up" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: "1.3rem", marginBottom: "1rem", textAlign: 'center', textTransform: 'uppercase', color: 'var(--text-gold)', letterSpacing: '2px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
               Bảng Vàng
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {state.teams.map((team) => {
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: 'max(25vh, 250px)', overflowY: 'auto', paddingRight: '4px' }}>
+              {getTeamRanking(state.teams).map((team) => {
                 const isLeader = leaders.some((l) => l.id === team.id) && team.score > 0;
                 return (
                   <div key={team.id} style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "1rem 1.5rem",
+                    padding: "0.8rem 1.2rem",
                     background: isLeader ? "linear-gradient(90deg, rgba(212,175,55,0.15), transparent)" : "rgba(0,0,0,0.3)",
                     borderLeft: `4px solid ${isLeader ? 'var(--accent-gold)' : team.color}`,
                     borderRadius: "6px",
@@ -282,7 +288,35 @@ function DisplayContent() {
             </div>
           </div>
 
-          {/* ACTION MESSAGE LOG */}
+          {/* SCORING RULES */}
+          <div className="glass-panel animate-slide-up" style={{ padding: '1.2rem', animationDelay: '0.2s' }}>
+            <h3 style={{ fontSize: "1rem", marginBottom: "0.8rem", textAlign: 'center', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '1px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              🎯 CƠ CHẾ ĐIỂM SỐ
+            </h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Trả lời đúng 1 câu hỏi 🧩:</span>
+                <span style={{ color: 'var(--accent-green)', fontWeight: 'bold' }}>+10 điểm</span>
+              </li>
+              <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Đoán đúng sự kiện (Mở 1-3 ô):</span>
+                <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>+40 điểm</span>
+              </li>
+              <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Đoán đúng sự kiện (Mở 4-6 ô):</span>
+                <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>+30 điểm</span>
+              </li>
+              <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Đoán đúng sự kiện (Mở 7-8 ô):</span>
+                <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>+20 điểm</span>
+              </li>
+              <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Đoán đúng sự kiện (Gần chót):</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>+10 điểm</span>
+              </li>
+            </ul>
+          </div>
+                    {/* ACTION MESSAGE LOG */}
           {state.lastActionMessage && (
             <div className="glass-panel animate-pop-in" style={{
               padding: "1.5rem",

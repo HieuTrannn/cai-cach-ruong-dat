@@ -68,7 +68,7 @@ export default function LandingPage() {
           marginBottom: '1.5rem',
           textShadow: '0 4px 24px rgba(0,0,0,0.5)',
         }}>
-          Giải Mã Bức Ảnh Lịch Sử
+          Giải Mã Bức Ảnh <br/> Lịch Sử
         </h1>
         
         <p style={{

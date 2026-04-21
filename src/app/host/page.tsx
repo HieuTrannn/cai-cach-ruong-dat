@@ -36,10 +36,16 @@ function HostContent() {
 
   useHostKeyboardShortcuts(getSelectedTeamId);
 
+  const totalTiles = currentEvent?.tiles.length || 9;
+  const numCols = totalTiles > 9 ? 4 : 3;
+  const numRows = Math.ceil(totalTiles / numCols);
+
   const getBackgroundPosition = (idx: number) => {
-    const row = Math.floor((idx - 1) / 3);
-    const col = (idx - 1) % 3;
-    return `${col * 50}% ${row * 50}%`;
+    const col = (idx - 1) % numCols;
+    const row = Math.floor((idx - 1) / numCols);
+    const x = numCols > 1 ? (col * 100) / (numCols - 1) : 0;
+    const y = numRows > 1 ? (row * 100) / (numRows - 1) : 0;
+    return `${x}% ${y}%`;
   };
 
   // === SETUP ===
@@ -191,9 +197,13 @@ function HostContent() {
         {/* LEFT: CONTROLS & GRID */}
         <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           <div className="glass-panel" style={{ padding: '2rem', display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
-            {/* GRID 3x3 */}
+            {/* GRID */}
             <div style={{ width: "300px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px", background: "var(--bg-secondary)", padding: '6px', borderRadius: '8px' }}>
+              <div style={{
+                display: "grid", gridTemplateColumns: `repeat(${numCols}, 1fr)`, gap: "10px",
+                flex: 1, padding: "10px", background: "rgba(255,255,255,0.05)", borderRadius: "10px",
+                boxShadow: "inset 0 0 10px rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.1)"
+              }}>
                 {currentEvent?.tiles.map((tile) => {
                    const bgPos = getBackgroundPosition(tile.index);
                    return (
@@ -208,7 +218,7 @@ function HostContent() {
                         fontFamily: 'var(--font-heading)',
                         fontWeight: "bold",
                         background: tile.revealed ? `url(${imageUrl})` : "var(--bg-card)",
-                        backgroundSize: tile.revealed ? "300% 300%" : "auto",
+                        backgroundSize: tile.revealed ? `${numCols * 100}% ${numRows * 100}%` : "auto",
                         backgroundPosition: tile.revealed ? bgPos : "center",
                         color: tile.revealed ? "transparent" : (tile.attempted ? "var(--accent-danger)" : "var(--text-primary)"),
                         border: `1px solid ${tile.attempted && !tile.revealed ? "var(--accent-danger)" : "rgba(255,255,255,0.1)"}`,
@@ -222,7 +232,7 @@ function HostContent() {
                 })}
               </div>
               <p style={{ textAlign: "center", marginTop: "1rem", color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                Đã mở: <span style={{ color: 'var(--text-gold)', fontWeight: 'bold' }}>{revealedCount}/9</span>
+                Đã mở: <span style={{ color: 'var(--text-gold)', fontWeight: 'bold' }}>{revealedCount}/{totalTiles}</span>
               </p>
             </div>
             
@@ -230,7 +240,7 @@ function HostContent() {
             <div style={{ flex: 1 }}>
                <h3 style={{ fontSize: '1.2rem', color: 'var(--text-gold)', marginBottom: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>Phím tắt hệ thống</h3>
                <ul style={{ listStyle: 'none', padding: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 2 }}>
-                 <li><kbd style={kbdStyle}>1</kbd> - <kbd style={kbdStyle}>9</kbd> : Mở ô tương ứng</li>
+                 <li><kbd style={kbdStyle}>1</kbd> - <kbd style={kbdStyle}>{totalTiles}</kbd> : Mở ô tương ứng</li>
                  <li><kbd style={kbdStyle}>C</kbd> : Chấm <strong style={{ color: 'var(--accent-green)'}}>Đúng</strong> (Khi mở ô)</li>
                  <li><kbd style={kbdStyle}>W</kbd> : Chấm <strong style={{ color: 'var(--accent-danger)'}}>Sai</strong> (Khi mở ô)</li>
                  <li><kbd style={kbdStyle}>G</kbd> : Kích hoạt đoán sự kiện</li>
@@ -379,7 +389,7 @@ function HostContent() {
               <h2 style={{ color: 'var(--accent-blue)' }}>🔍 Cướp quyền Đoán Sự Kiện</h2>
               <button onClick={closeGuess} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
             </div>
-            <p style={{ color: 'var(--text-secondary)' }}>Mảnh ghép đã mở: {revealedCount}/9</p>
+            <p style={{ color: 'var(--text-secondary)' }}>Mảnh ghép đã mở: {revealedCount}/{totalTiles}</p>
 
             <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '6px', marginTop: '1rem' }}>
                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>ĐÁP ÁN CHÍNH THỨC CỦA CHƯƠNG TRÌNH:</span>
