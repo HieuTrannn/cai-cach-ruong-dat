@@ -2,7 +2,7 @@
 // Scoring Logic
 // ============================================================
 
-import { ScoringConfig } from "@/types/game";
+import { ScoringConfig, TeamState } from "@/types/game";
 
 export const SCORING_CONFIG: ScoringConfig = {
   tileCorrectScore: 10,
@@ -47,8 +47,8 @@ export function allTilesRevealed(
 
 /** Xếp hạng các nhóm (xử lý trường hợp hòa điểm) */
 export function getTeamRanking(
-  teams: { id: string; name: string; score: number }[]
-): { id: string; name: string; score: number; rank: number }[] {
+  teams: TeamState[]
+): (TeamState & { rank: number })[] {
   const sorted = [...teams].sort((a, b) => b.score - a.score);
   return sorted.map((team, index) => {
     let rank = index + 1;
@@ -62,8 +62,8 @@ export function getTeamRanking(
 
 /** Tìm nhóm dẫn đầu */
 export function getLeadingTeams(
-  teams: { id: string; name: string; score: number }[]
-): { id: string; name: string; score: number }[] {
+  teams: TeamState[]
+): TeamState[] {
   if (teams.length === 0) return [];
   const maxScore = Math.max(...teams.map((t) => t.score));
   return teams.filter((t) => t.score === maxScore);
