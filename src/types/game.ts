@@ -9,6 +9,7 @@ export type GameStatus =
   | "ready"
   | "playing"
   | "question_open"
+  | "question_result"
   | "guess_open"
   | "event_completed"
   | "game_completed";
@@ -29,6 +30,7 @@ export interface TileData {
 export interface TileState extends TileData {
   revealed: boolean;
   attempted: boolean;
+  eliminatedOptions?: string[];
 }
 
 // --- Event (Sự kiện lịch sử) ---
@@ -78,6 +80,7 @@ export interface GameSessionState {
   teams: TeamState[];
   events: EventState[];
   selectedTileId: string | null;
+  judgedAnswer: { teamId: string; isCorrect: boolean } | null;
   lastActionMessage: string | null;
   createdAt: string;
   updatedAt: string;
@@ -100,6 +103,10 @@ export type GameAction =
       type: "JUDGE_ANSWER";
       payload: { tileId: string; teamId: string; isCorrect: boolean };
     }
+  | {
+      type: "GUESS_QUESTION_WRONG";
+      payload: { tileId: string; teamId: string; option: string };
+    }
   | { type: "CLOSE_QUESTION" }
   | { type: "OPEN_GUESS" }
   | {
@@ -107,6 +114,7 @@ export type GameAction =
       payload: { teamId: string; guessText: string; isCorrect: boolean };
     }
   | { type: "CLOSE_GUESS" }
+  | { type: "REVEAL_EVENT" }
   | { type: "NEXT_EVENT" }
   | { type: "FINISH_GAME" }
   | { type: "RESET" }

@@ -50,6 +50,7 @@ function createInitialState(): GameSessionState {
     teams: [],
     events: [],
     selectedTileId: null,
+    judgedAnswer: null,
     lastActionMessage: null,
     createdAt: "",
     updatedAt: "",
@@ -114,6 +115,7 @@ export function gameReducer(
         teams,
         events,
         selectedTileId: null,
+        judgedAnswer: null,
         lastActionMessage: `Đã tạo phiên chơi với ${teams.length} nhóm.`,
         createdAt: now,
         updatedAt: now,
@@ -213,34 +215,108 @@ export function gameReducer(
         message = `❌ ${team?.name ?? "Nhóm"} trả lời sai ô ${tileData.index}. Ô chưa được mở.`;
       }
 
-      const updatedEvent = newEvents[eventIndex];
-      const allRevealed = allTilesRevealed(updatedEvent.tiles);
-      let newStatus: GameStatus = "playing";
-
-      if (allRevealed) {
-        newEvents[eventIndex] = { ...updatedEvent, isCompleted: true };
-        newStatus = "event_completed";
-        message += ` | Tất cả 9 ô đã mở! Sự kiện: "${updatedEvent.displayTitle}"`;
-      }
-
       return {
         ...state,
-        status: newStatus,
+        status: "question_result",
         teams: newTeams,
         events: newEvents,
-        selectedTileId: null,
+        judgedAnswer: { teamId, isCorrect },
         lastActionMessage: message,
         updatedAt: now,
       };
     }
 
-    case "CLOSE_QUESTION": {
+    case "GUESS_QUESTION_WRONG": {
       if (state.status !== "question_open") return state;
+      const { tileId, teamId, option } = action.payload;
+      const eventIndex = state.currentEventIndex;
+      const currentEvt = state.events[eventIndex];
+      if (!currentEvt) return state;
+      
+      const tileIndex = currentEvt.tiles.findIndex((t) => t.id === tileId);
+      if (tileIndex === -1) return state;
+
+      const team = state.teams.find((t) => t.id === teamId);
+      const tile = currentEvt.tiles[tileIndex];
+      const eliminated = tile.eliminatedOptions || [];
+
+      if (eliminated.includes(option)) return state;
+
+      const newEvents = state.events.map((evt, i) => {
+        if (i !== eventIndex) return evt;
+        return {
+          ...evt,
+          tiles: evt.tiles.map((t, ti) => {
+            if (ti !== tileIndex) return t;
+            return {
+              ...t,
+              eliminatedOptions: [...(eliminated), option],
+              attempted: true,
+            };
+          }),
+        };
+      });
+
       return {
         ...state,
-        status: "playing",
+        events: newEvents,
+        lastActionMessage: `❌ ${team?.name ?? "Một nhóm"} đã loại đáp án "${option}"`,
+        updatedAt: now,
+      };
+    }
+
+    case "CLOSE_QUESTION": {
+      if (state.status !== "question_open" && state.status !== "question_result") return state;
+      const evtIndex = state.currentEventIndex;
+      const currentEvt = state.events[evtIndex];
+      const allRevealed = currentEvt ? allTilesRevealed(currentEvt.tiles) : false;
+      
+      let newStatus: GameStatus = "playing";
+      let message = "Đã đóng câu hỏi. Tiếp tục chọn ô.";
+      let newEvents = state.events;
+
+      if (allRevealed) {
+        newStatus = "event_completed";
+        message = `Tất cả 9 ô đã mở! Sự kiện: "${currentEvt.displayTitle}"`;
+        newEvents = state.events.map((evt, i) => {
+          if (i !== evtIndex) return evt;
+          return { ...evt, isCompleted: true };
+        });
+      }
+
+      return {
+        ...state,
+        status: newStatus,
+        events: newEvents,
         selectedTileId: null,
-        lastActionMessage: "Đã đóng câu hỏi. Hãy chọn ô khác.",
+        judgedAnswer: null,
+        lastActionMessage: message,
+        updatedAt: now,
+      };
+    }
+
+    case "REVEAL_EVENT": {
+      const evtIndex = state.currentEventIndex;
+      const currentEvt = state.events[evtIndex];
+      if (!currentEvt) return state;
+      
+      const newEvents = state.events.map((evt, i) => {
+        if (i !== evtIndex) return evt;
+        return {
+          ...evt,
+          isCompleted: true,
+          guessedByTeamId: null, 
+          tiles: evt.tiles.map((t) => ({ ...t, revealed: true })),
+        };
+      });
+
+      return {
+        ...state,
+        status: "event_completed",
+        events: newEvents,
+        selectedTileId: null,
+        judgedAnswer: null,
+        lastActionMessage: `👁️ Đã tiết lộ sự kiện: "${currentEvt.displayTitle}" (Không có nhóm nào ghi điểm)`,
         updatedAt: now,
       };
     }
@@ -305,6 +381,7 @@ export function gameReducer(
           teams: newTeams,
           events: newEvents,
           selectedTileId: null,
+          judgedAnswer: null,
           lastActionMessage: `🎉 ${team?.name ?? "Nhóm"} đoán đúng! "${guessText}" — +${bonus} điểm thưởng! Sự kiện: "${currentEvt2.displayTitle}"`,
           updatedAt: now,
         };
@@ -341,6 +418,7 @@ export function gameReducer(
           ...state,
           status: "game_completed",
           selectedTileId: null,
+          judgedAnswer: null,
           lastActionMessage: "🏆 Game kết thúc! Xem bảng xếp hạng chung cuộc.",
           updatedAt: now,
         };
@@ -350,6 +428,7 @@ export function gameReducer(
         status: "playing",
         currentEventIndex: nextIndex,
         selectedTileId: null,
+        judgedAnswer: null,
         lastActionMessage: `Bắt đầu ${state.events[nextIndex]?.title ?? "Sự kiện tiếp theo"}! Hãy chọn một ô.`,
         updatedAt: now,
       };
@@ -360,6 +439,7 @@ export function gameReducer(
         ...state,
         status: "game_completed",
         selectedTileId: null,
+        judgedAnswer: null,
         lastActionMessage: "🏆 Game kết thúc! Xem bảng xếp hạng chung cuộc.",
         updatedAt: now,
       };
@@ -394,10 +474,12 @@ interface GameContextValue {
   startGame: () => void;
   selectTile: (tileId: string) => void;
   judgeAnswer: (tileId: string, teamId: string, isCorrect: boolean) => void;
+  guessQuestionWrong: (tileId: string, teamId: string, option: string) => void;
   closeQuestion: () => void;
   openGuess: () => void;
   judgeGuess: (teamId: string, guessText: string, isCorrect: boolean) => void;
   closeGuess: () => void;
+  revealEvent: () => void;
   nextEvent: () => void;
   finishGame: () => void;
   resetGame: () => void;
@@ -472,6 +554,14 @@ export function GameProvider({ children, role }: GameProviderProps) {
       }),
     []
   );
+  const guessQuestionWrong = useCallback(
+    (tileId: string, teamId: string, option: string) =>
+      dispatch({
+        type: "GUESS_QUESTION_WRONG",
+        payload: { tileId, teamId, option },
+      }),
+    []
+  );
   const closeQuestion = useCallback(
     () => dispatch({ type: "CLOSE_QUESTION" }),
     []
@@ -490,6 +580,10 @@ export function GameProvider({ children, role }: GameProviderProps) {
   );
   const closeGuess = useCallback(
     () => dispatch({ type: "CLOSE_GUESS" }),
+    []
+  );
+  const revealEvent = useCallback(
+    () => dispatch({ type: "REVEAL_EVENT" }),
     []
   );
   const nextEvent = useCallback(
@@ -519,10 +613,12 @@ export function GameProvider({ children, role }: GameProviderProps) {
     startGame,
     selectTile,
     judgeAnswer,
+    guessQuestionWrong,
     closeQuestion,
     openGuess,
     judgeGuess,
     closeGuess,
+    revealEvent,
     nextEvent,
     finishGame,
     resetGame,
@@ -557,6 +653,7 @@ export function useHostKeyboardShortcuts(
     state,
     selectTile,
     judgeAnswer,
+    guessQuestionWrong,
     openGuess,
     closeQuestion,
     closeGuess,
@@ -624,7 +721,7 @@ export function useHostKeyboardShortcuts(
       }
 
       if (key === "escape") {
-        if (state.status === "question_open") closeQuestion();
+        if (state.status === "question_open" || state.status === "question_result") closeQuestion();
         else if (state.status === "guess_open") closeGuess();
         return;
       }

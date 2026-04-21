@@ -22,12 +22,13 @@ export default function HostPage() {
 function HostContent() {
   const {
     state,
-    createSession, startGame, selectTile, judgeAnswer, closeQuestion,
-    openGuess, judgeGuess, closeGuess, nextEvent, finishGame, resetGame,
+    createSession, startGame, selectTile, judgeAnswer, guessQuestionWrong, closeQuestion,
+    openGuess, judgeGuess, closeGuess, revealEvent, nextEvent, finishGame, resetGame,
     currentEvent, revealedCount,
   } = useGame();
 
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const getSelectedTeamId = useCallback(() => selectedTeamId, [selectedTeamId]);
   const [teamNames, setTeamNames] = useState<string[]>(["Nhóm 1", "Nhóm 2", "Nhóm 3", "Nhóm 4"]);
   const [guessTeamId, setGuessTeamId] = useState<string>("");
@@ -286,7 +287,7 @@ function HostContent() {
       </div>
 
       {/* QUESTION POPUP */}
-      {state.status === "question_open" && selectedTile && (
+      {(state.status === "question_open" || state.status === "question_result") && selectedTile && (
         <div style={overlayStyle}>
           <div className="glass-panel animate-pop-in" style={{ padding: "2rem", maxWidth: "700px", width: "100%", borderTop: '4px solid var(--accent-gold)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -299,21 +300,29 @@ function HostContent() {
             </p>
             
             {selectedTile.options && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '1.5rem' }}>
                 {selectedTile.options.map((opt, i) => {
-                  const isCorrect = opt.startsWith(selectedTile.correctAnswer as string);
+                  const isEliminated = selectedTile.eliminatedOptions?.includes(opt);
+                  const isSelected = selectedOption === opt;
+                  const isResult = state.status === "question_result";
+                  const isCorrect = isResult && opt.startsWith(selectedTile.correctAnswer as string);
+
                   return (
-                    <div key={i} style={{
-                      padding: "12px", background: isCorrect ? "rgba(39, 174, 96, 0.2)" : "rgba(255,255,255,0.05)",
-                      border: `1px solid ${isCorrect ? 'var(--accent-green)' : 'rgba(255,255,255,0.1)'}`, borderRadius: "6px"
+                    <button key={i} disabled={isEliminated || state.status !== "question_open"} onClick={() => setSelectedOption(opt)} style={{
+                      padding: "12px", background: isCorrect ? "rgba(39, 174, 96, 0.4)" : (isSelected ? "rgba(212,175,55,0.8)" : (isEliminated ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.08)")),
+                      border: `1px solid ${isCorrect ? 'var(--accent-green)' : (isSelected ? 'var(--accent-gold)' : (isEliminated ? 'rgba(231, 76, 60, 0.5)' : 'rgba(255,255,255,0.2)'))}`, 
+                      borderRadius: "6px", color: (isSelected || isCorrect) ? 'white' : (isEliminated ? 'var(--accent-danger)' : 'white'),
+                      textAlign: 'left', cursor: (isEliminated || state.status !== "question_open") ? 'default' : 'pointer',
+                      opacity: isEliminated ? 0.5 : 1, textDecoration: isEliminated ? 'line-through' : 'none',
+                      fontWeight: (isSelected || isCorrect) ? 'bold' : 'normal'
                     }}>
-                      <span style={{ color: isCorrect ? 'var(--accent-green)' : 'inherit', fontWeight: isCorrect ? 'bold' : 'normal' }}>{opt} {isCorrect && "✓"}</span>
-                    </div>
+                      {opt} {isCorrect && "✓"} {isEliminated && "❌"}
+                    </button>
                   );
                 })}
               </div>
             )}
-            {selectedTile.explanation && (
+            {selectedTile.explanation && state.status === "question_result" && (
               <div style={{ marginTop: "1rem", padding: '1rem', background: 'rgba(212,175,55,0.1)', borderLeft: '3px solid var(--accent-gold)', fontSize: "0.9rem", color: "var(--text-secondary)" }}>
                 <strong>Giải thích:</strong> {selectedTile.explanation}
               </div>
@@ -323,7 +332,7 @@ function HostContent() {
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <label style={{ color: 'var(--text-secondary)' }}>Nhóm trả lời: </label>
-              <select value={selectedTeamId ?? ""} onChange={(e) => setSelectedTeamId(e.target.value || null)} style={{ padding: '8px 12px', flex: 1 }}>
+              <select value={selectedTeamId ?? ""} disabled={state.status !== "question_open"} onChange={(e) => setSelectedTeamId(e.target.value || null)} style={{ padding: '8px 12px', flex: 1, background: state.status !== "question_open" ? 'rgba(255,255,255,0.1)' : undefined }}>
                 <option value="">-- Chọn nhóm đang giơ tay --</option>
                 {state.teams.map((team) => (
                   <option key={team.id} value={team.id}>{team.name}</option>
@@ -331,16 +340,33 @@ function HostContent() {
               </select>
             </div>
             
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
-              <button disabled={!selectedTeamId} onClick={() => { if (selectedTeamId) { judgeAnswer(selectedTile.id, selectedTeamId, true); setSelectedTeamId(null); } }}
-                style={{ flex: 1, padding: "12px", background: "var(--accent-green)", color: "white", border: "none", borderRadius: "6px", fontSize: "1.1rem", cursor: selectedTeamId ? "pointer" : "not-allowed", opacity: selectedTeamId ? 1 : 0.5 }}>
-                ✅ ĐÚNG (C)
-              </button>
-              <button disabled={!selectedTeamId} onClick={() => { if (selectedTeamId) { judgeAnswer(selectedTile.id, selectedTeamId, false); setSelectedTeamId(null); } }}
-                style={{ flex: 1, padding: "12px", background: "var(--accent-danger)", color: "white", border: "none", borderRadius: "6px", fontSize: "1.1rem", cursor: selectedTeamId ? "pointer" : "not-allowed", opacity: selectedTeamId ? 1 : 0.5 }}>
-                ❌ SAI (W)
-              </button>
-            </div>
+            {state.status === "question_open" ? (
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
+                <button disabled={!selectedTeamId || !selectedOption} onClick={() => { 
+                  if (selectedTeamId && selectedOption) { 
+                    const isCorrect = selectedOption.startsWith(selectedTile.correctAnswer as string);
+                    if (isCorrect) {
+                       judgeAnswer(selectedTile.id, selectedTeamId, true);
+                       setSelectedTeamId(null);
+                       setSelectedOption(null);
+                    } else {
+                       guessQuestionWrong(selectedTile.id, selectedTeamId, selectedOption);
+                       setSelectedTeamId(null);
+                       setSelectedOption(null);
+                    }
+                  } 
+                }}
+                  style={{ flex: 1, padding: "16px", background: "var(--accent-blue)", color: "white", border: "none", borderRadius: "6px", fontSize: "1.1rem", cursor: (selectedTeamId && selectedOption) ? "pointer" : "not-allowed", opacity: (selectedTeamId && selectedOption) ? 1 : 0.5, fontWeight: 'bold' }}>
+                  XÁC NHẬN ĐÁP ÁN
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
+                <button onClick={closeQuestion} style={{ flex: 1, padding: "16px", background: "var(--accent-blue)", color: "white", border: "none", borderRadius: "6px", fontSize: "1.2rem", cursor: "pointer", fontWeight: "bold" }}>
+                  ➡️ ĐÓNG CÂU HỎI (Esc)
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -383,6 +409,13 @@ function HostContent() {
               <button disabled={!guessTeamId} onClick={() => { if (guessTeamId) { judgeGuess(guessTeamId, guessText, false); setGuessText(""); setGuessTeamId(""); } }}
                 style={{ flex: 1, padding: "12px", background: "var(--accent-danger)", color: "white", border: "none", borderRadius: "6px", cursor: guessTeamId ? "pointer" : "not-allowed", opacity: guessTeamId ? 1 : 0.5 }}>
                 ❌ PHẠT MẤT LƯỢT (SAI)
+              </button>
+            </div>
+
+            <div style={{ marginTop: "1rem" }}>
+              <button onClick={() => { if (confirm("Không nhóm nào có thể ghi điểm. Bạn muốn bỏ qua và tiết lộ bức ảnh luôn?")) { revealEvent(); closeGuess(); } }}
+                style={{ width: "100%", padding: "12px", background: "transparent", color: "var(--text-secondary)", border: "1px dashed var(--text-secondary)", borderRadius: "6px", cursor: "pointer", transition: "all 0.2s" }}>
+                👁️ HUỶ BỎ VÀ TIẾT LỘ SỰ KIỆN
               </button>
             </div>
           </div>

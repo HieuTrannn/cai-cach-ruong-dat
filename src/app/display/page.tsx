@@ -123,33 +123,36 @@ function DisplayContent() {
   if (state.status === "game_completed") {
     const ranking = getTeamRanking(state.teams);
     return (
-      <main className="animate-pop-in" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
-        <div className="glass-panel" style={{ padding: "4rem", textAlign: "center", width: "800px", maxWidth: "95%" }}>
-          <h1 className="text-gradient" style={{ fontSize: "4rem", textTransform: 'uppercase', letterSpacing: '4px' }}>🏆 Vinh Danh</h1>
-          <p style={{ color: 'var(--text-gold)', fontStyle: 'italic', fontSize: '1.2rem', marginTop: '1rem', marginBottom: '3rem' }}>
-            Kết quả giải mã không gian lịch sử
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <main className="animate-pop-in" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "2rem" }}>
+        <div className="glass-panel" style={{ padding: "3rem", textAlign: "center", width: "800px", maxWidth: "95%", display: "flex", flexDirection: "column", maxHeight: "90vh" }}>
+          <div style={{ flexShrink: 0 }}>
+            <h1 className="text-gradient" style={{ fontSize: ranking.length > 5 ? "3rem" : "4rem", textTransform: 'uppercase', letterSpacing: '4px', margin: 0 }}>🏆 Vinh Danh</h1>
+            <p style={{ color: 'var(--text-gold)', fontStyle: 'italic', fontSize: '1.2rem', marginTop: '0.8rem', marginBottom: ranking.length > 5 ? '1.5rem' : '3rem' }}>
+              Kết quả giải mã không gian lịch sử
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: ranking.length > 5 ? '0.8rem' : '1.5rem', overflowY: 'auto', paddingRight: '10px' }}>
             {ranking.map((team, idx) => (
               <div key={team.id} className="animate-slide-up" style={{
-                animationDelay: `${idx * 0.15}s`,
+                animationDelay: `${idx * 0.1}s`,
                 display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "1.5rem 2rem",
+                padding: ranking.length > 5 ? "1rem 1.5rem" : "1.5rem 2rem",
                 background: team.rank === 1 ? 'linear-gradient(90deg, rgba(212,175,55,0.2), rgba(0,0,0,0.6))' : 'rgba(0,0,0,0.4)',
                 borderLeft: `6px solid ${team.rank === 1 ? 'var(--accent-gold)' : team.color}`,
                 borderRadius: "8px",
-                fontSize: "1.8rem",
+                fontSize: ranking.length > 5 ? "1.4rem" : "1.8rem",
                 boxShadow: team.rank === 1 ? 'var(--glow-gold)' : 'var(--shadow-sm)',
+                flexShrink: 0
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                  <span style={{ fontSize: "2.5rem", width: '50px', textAlign: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: ranking.length > 5 ? '16px' : '24px' }}>
+                  <span style={{ fontSize: ranking.length > 5 ? "2rem" : "2.5rem", width: '50px', textAlign: 'center' }}>
                     {team.rank === 1 ? "🥇" : team.rank === 2 ? "🥈" : team.rank === 3 ? "🥉" : `#${team.rank}`}
                   </span>
                   <span style={{ color: team.rank === 1 ? 'var(--accent-gold)' : 'var(--text-primary)', fontWeight: team.rank === 1 ? "bold" : "normal" }}>
                     {team.name}
                   </span>
                 </div>
-                <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold', color: 'var(--text-gold)', fontSize: '2rem' }}>
+                <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold', color: 'var(--text-gold)', fontSize: ranking.length > 5 ? "1.6rem" : "2rem" }}>
                   {team.score} <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>điểm</span>
                 </span>
               </div>
@@ -296,7 +299,7 @@ function DisplayContent() {
       </div>
 
       {/* QUESTION OVERLAY */}
-      {state.status === "question_open" && currentEvent && (
+      {(state.status === "question_open" || state.status === "question_result") && currentEvent && (
         <div className="animate-pop-in" style={{
           position: "fixed", inset: 0, background: "rgba(10, 8, 6, 0.95)",
           display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
@@ -319,15 +322,27 @@ function DisplayContent() {
                   </h2>
                   {tile.options && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: "3rem", textAlign: "left" }}>
-                      {tile.options.map((opt, i) => (
-                        <div key={i} style={{
-                          padding: "1.5rem", fontSize: "1.4rem",
-                          background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-                          borderRadius: "8px", color: 'var(--text-secondary)'
-                        }}>
-                          {opt}
-                        </div>
-                      ))}
+                      {tile.options.map((opt, i) => {
+                        const isCorrect = opt.startsWith(tile.correctAnswer as string);
+                        const isResult = state.status === "question_result";
+                        const highlight = isResult && isCorrect;
+                        const isEliminated = tile.eliminatedOptions?.includes(opt);
+                        
+                        return (
+                          <div key={i} style={{
+                            padding: "1.5rem", fontSize: "1.4rem",
+                            background: highlight ? "rgba(39, 174, 96, 0.2)" : (isEliminated ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)"), 
+                            border: `2px solid ${highlight ? 'var(--accent-green)' : (isEliminated ? 'rgba(231, 76, 60, 0.3)' : 'rgba(255,255,255,0.1)')}`,
+                            borderRadius: "8px", color: highlight ? 'var(--accent-green)' : (isEliminated ? 'rgba(255,255,255,0.3)' : 'var(--text-secondary)'),
+                            fontWeight: highlight ? 'bold' : 'normal',
+                            boxShadow: highlight ? '0 0 15px rgba(39, 174, 96, 0.5)' : 'none',
+                            textDecoration: isEliminated ? 'line-through' : 'none',
+                            transition: 'all 0.3s ease'
+                          }}>
+                            {opt} {highlight && "✓"} {isEliminated && "❌"}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </>
@@ -345,41 +360,67 @@ function DisplayContent() {
           backdropFilter: 'blur(15px)'
         }}>
           <div className="glass-panel" style={{
-            padding: "0", maxWidth: "1000px", width: "95%", textAlign: "center",
-            display: 'flex', flexDirection: 'column', overflow: 'hidden'
+            padding: "0", maxWidth: "1400px", width: "95%", textAlign: "left",
+            display: 'flex', flexDirection: 'row', overflow: 'hidden', alignItems: 'stretch',
+            maxHeight: '90vh'
           }}>
-            <div style={{ height: '350px', background: `url(${imageUrl}) center/cover no-repeat`, position: 'relative' }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, var(--bg-card))' }} />
+            {/* Left side: Image */}
+            <div style={{ flex: '1 1 50%', background: 'rgba(0, 0, 0, 0.4)', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+                <img 
+                  src={imageUrl} 
+                  alt={currentEvent.displayTitle} 
+                  style={{ width: '100%', height: '100%', maxHeight: '65vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.6)' }} 
+                />
+              </div>
               {currentEvent.imageCaption && (
-                 <div style={{ position: 'absolute', bottom: '15px', right: '20px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic', zIndex: 2, background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: '4px' }}>
+                 <div style={{ padding: '1rem 2rem', fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', textAlign: 'center', background: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                    📷 {currentEvent.imageCaption}
                  </div>
               )}
             </div>
-            <div style={{ padding: '3rem 4rem', position: 'relative', zIndex: 1, marginTop: '-100px' }}>
-              <div style={{ background: 'var(--accent-red)', color: 'white', display: 'inline-block', padding: '0.5rem 1.5rem', borderRadius: '20px', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem', marginBottom: '1rem', fontWeight: 'bold' }}>
-                Đã Giải Mã
-              </div>
-              <h2 className="text-gradient" style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                {currentEvent.displayTitle}
-              </h2>
-              <p style={{ fontSize: "1.4rem", color: 'var(--text-primary)', marginBottom: "1.5rem", fontStyle: 'italic' }}>
-                {currentEvent.shortDescription}
-              </p>
-              <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '2rem 0' }} />
-              <p style={{ fontSize: "1.2rem", color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: '2rem', textAlign: 'justify' }}>
-                {currentEvent.historicalContext}
-              </p>
-              <div style={{ background: 'rgba(212,175,55,0.1)', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)' }}>
-                <p style={{ fontSize: "1.3rem", fontWeight: "bold", color: "var(--text-gold)", textAlign: 'left' }}>
-                  📌 Bài học lịch sử: <span style={{ color: 'var(--text-primary)', fontWeight: 'normal' }}>{currentEvent.keyTakeaway}</span>
-                </p>
-              </div>
-              {currentEvent.guessedByTeamId && (
-                <div className="animate-pop-in" style={{ marginTop: "2rem", fontSize: "1.5rem", color: "var(--accent-green)", fontWeight: 'bold', background: 'rgba(39, 174, 96, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--accent-green)' }}>
-                  🏆 Đoán đúng bởi: {state.teams.find((t) => t.id === currentEvent.guessedByTeamId)?.name}
+
+            {/* Right side: Content */}
+            <div style={{ flex: '1 1 50%', padding: '3rem 4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', overflowY: 'auto' }}>
+              <div>
+                <div style={{ background: 'var(--accent-red)', color: 'white', display: 'inline-block', padding: '0.4rem 1.2rem', borderRadius: '20px', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+                  Đã Giải Mã
                 </div>
-              )}
+                <h2 className="text-gradient" style={{ fontSize: "2.4rem", marginBottom: "1rem", lineHeight: 1.3 }}>
+                  {currentEvent.displayTitle}
+                </h2>
+
+                {currentEvent.shortDescription !== currentEvent.historicalContext ? (
+                  <>
+                    <p style={{ fontSize: "1.2rem", color: 'var(--text-primary)', marginBottom: "0.5rem", fontStyle: 'italic' }}>
+                      {currentEvent.shortDescription}
+                    </p>
+                    <div style={{ height: '1px', width: '60px', background: 'var(--accent-gold)', margin: '1.5rem 0' }} />
+                    <p style={{ fontSize: "1.1rem", color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: '1.5rem', textAlign: 'justify' }}>
+                      {currentEvent.historicalContext}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ height: '2px', width: '60px', background: 'var(--accent-gold)', margin: '1.5rem 0' }} />
+                    <p style={{ fontSize: "1.15rem", color: "var(--text-secondary)", lineHeight: 1.7, margin: '1rem 0 2rem 0', textAlign: 'justify' }}>
+                      {currentEvent.historicalContext}
+                    </p>
+                  </>
+                )}
+
+                <div style={{ background: 'rgba(212,175,55,0.1)', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)' }}>
+                  <p style={{ fontSize: "1.15rem", fontWeight: "bold", color: "var(--text-gold)", textAlign: 'left', margin: 0, lineHeight: 1.6 }}>
+                    📌 Bài học lịch sử: <span style={{ color: 'var(--text-primary)', fontWeight: 'normal' }}>{currentEvent.keyTakeaway}</span>
+                  </p>
+                </div>
+                
+                {currentEvent.guessedByTeamId && (
+                  <div className="animate-pop-in" style={{ marginTop: "1.5rem", fontSize: "1.3rem", color: "var(--accent-green)", fontWeight: 'bold', background: 'rgba(39, 174, 96, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--accent-green)', textAlign: 'center' }}>
+                    🏆 Đoán đúng bởi: {state.teams.find((t) => t.id === currentEvent.guessedByTeamId)?.name}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

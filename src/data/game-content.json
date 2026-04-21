@@ -10,7 +10,7 @@
       "shortDescription": "Sự kiện này phản ánh một kết quả tích cực ban đầu của Cải cách ruộng đất: một bộ phận nông dân được chia ruộng, đời sống và tinh thần có chuyển biến, từ đó tạo nên sự phấn khởi trong sinh hoạt và lao động.",
       "historicalContext": "Sự kiện này phản ánh một kết quả tích cực ban đầu của Cải cách ruộng đất: một bộ phận nông dân được chia ruộng, đời sống và tinh thần có chuyển biến, từ đó tạo nên sự phấn khởi trong sinh hoạt và lao động.",
       "keyTakeaway": "Ý nghĩa sư phạm của vòng 1 là giúp người chơi hiểu rằng không thể đánh giá Cải cách ruộng đất chỉ bằng một chiều tiêu cực; cần phân biệt giữa mục tiêu đúng và những sai lầm xảy ra trong quá trình thực hiện.",
-      "imageUrl": "/images/event-2.png",
+      "imageUrl": "/images/event-1.png",
       "imageCaption": "Nông dân phấn khởi mua sắm đồ dùng gia đình sau khi được chia ruộng trong Cải cách ruộng đất. (Ảnh: tư liệu/TTXVN)",
       "answerKeywords": [
         "luật cải cách ruộng đất 1953",
@@ -24,82 +24,82 @@
           "id": "event-1-tile-1",
           "index": 1,
           "questionType": "multiple_choice",
-          "question": "Luật Cải cách ruộng đất được Quốc hội khóa I, kỳ họp thứ ba thông qua vào ngày nào?",
-          "options": ["A. 2/9/1945", "B. 4/12/1953", "C. 19/12/1953", "D. 7/5/1954"],
+          "question": "Trong nhìn nhận chính thức, cải cách ruộng đất được xác định là:",
+          "options": ["A. Một chủ trương hoàn toàn sai từ đầu", "B. Một chủ trương đúng và cần thiết trong hoàn cảnh lịch sử lúc bấy giờ", "C. Một quyết định mang tính tự phát", "D. Một chính sách không liên quan đến nông dân"],
           "correctAnswer": "B",
-          "explanation": "Luật Cải cách ruộng đất được Quốc hội khóa I, kỳ họp thứ ba thông qua ngày 4/12/1953."
+          "explanation": "Một chủ trương đúng và cần thiết trong hoàn cảnh lịch sử lúc bấy giờ"
         },
         {
           "id": "event-1-tile-2",
           "index": 2,
           "questionType": "multiple_choice",
-          "question": "Chủ tịch Hồ Chí Minh ký sắc lệnh nào để ban bố Luật Cải cách ruộng đất?",
-          "options": ["A. 197/SL", "B. 198/SL", "C. 14/SL", "D. 51/SL"],
-          "correctAnswer": "A",
-          "explanation": "Chủ tịch Hồ Chí Minh ký Sắc lệnh 197/SL ngày 19/12/1953 để ban bố Luật Cải cách ruộng đất."
+          "question": "Một trong những mục tiêu lớn của cải cách ruộng đất là:",
+          "options": ["A. Mở rộng thương mại quốc tế", "B. Tăng thuế nông thôn", "C. Giải quyết vấn đề ruộng đất cho nông dân", "D. Tập trung hóa toàn bộ sản xuất ngay lập tức"],
+          "correctAnswer": "C",
+          "explanation": "Giải quyết vấn đề ruộng đất cho nông dân"
         },
         {
           "id": "event-1-tile-3",
           "index": 3,
           "questionType": "multiple_choice",
-          "question": "Một khẩu hiệu cốt lõi gắn với cải cách ruộng đất là gì?",
-          "options": ["A. Công nghiệp hóa nông thôn", "B. Người cày có ruộng", "C. Tự do buôn bán ruộng đất", "D. Tư hữu tuyệt đối"],
+          "question": "Sai lầm nghiêm trọng đầu tiên trong cải cách ruộng đất là:",
+          "options": ["A. Không ban hành văn bản nào", "B. Đánh giá tình hình nông thôn không toàn diện", "C. Không huy động nông dân", "D. Không tổ chức đội công tác"],
           "correctAnswer": "B",
-          "explanation": "\"Người cày có ruộng\" là khẩu hiệu cốt lõi thể hiện mục tiêu chính của cải cách ruộng đất."
+          "explanation": "Đánh giá tình hình nông thôn không toàn diện"
         },
         {
           "id": "event-1-tile-4",
           "index": 4,
           "questionType": "multiple_choice",
-          "question": "Theo Nghị quyết Trung ương 14, nhận định nào đúng nhất?",
-          "options": ["A. Chủ trương từ đầu là sai hoàn toàn", "B. Không có sai lầm nào đáng kể", "C. Cuộc vận động căn bản có thắng lợi nhưng đã phạm sai lầm nghiêm trọng", "D. Sai lầm chỉ do địa phương, Trung ương không liên quan"],
+          "question": "Một biểu hiện sai lầm trong thực hiện cải cách ruộng đất là:",
+          "options": ["A. Đoàn kết đúng mọi tầng lớp", "B. Điều tra kỹ trước khi kết luận", "C. Mở rộng diện đả kích quá mức", "D. Tăng cường đối thoại dân chủ ở mọi nơi"],
           "correctAnswer": "C",
-          "explanation": "Nghị quyết nêu rõ: cuộc vận động căn bản có thắng lợi nhưng đã phạm sai lầm nghiêm trọng trong quá trình lãnh đạo, chỉ đạo và thực hiện."
+          "explanation": "Mở rộng diện đả kích quá mức"
         },
         {
           "id": "event-1-tile-5",
           "index": 5,
           "questionType": "multiple_choice",
-          "question": "Ngay từ tư tưởng chỉ đạo năm 1953, Trung ương đã nhấn mạnh điều gì?",
-          "options": ["A. Diện đả kích phải thật rộng", "B. Diện đả kích không nên quá rộng", "C. Không cần phân hóa đối tượng", "D. Chỉ dựa vào tố cáo quần chúng"],
-          "correctAnswer": "B",
-          "explanation": "Trung ương nhấn mạnh diện đả kích không nên quá rộng, nhưng thực tế nhiều nơi đã không làm đúng."
+          "question": "Trong phân loại giai cấp ở nông thôn, sai lầm nổi bật là:",
+          "options": ["A. Phân loại quá chậm", "B. Không phân loại gì cả", "C. Quy sai thành phần của một số người", "D. Chỉ phân loại theo tuổi tác"],
+          "correctAnswer": "C",
+          "explanation": "Quy sai thành phần của một số người"
         },
         {
           "id": "event-1-tile-6",
           "index": 6,
           "questionType": "multiple_choice",
-          "question": "Trong nông thôn, lực lượng nào phải được đoàn kết chặt chẽ theo văn kiện?",
-          "options": ["A. Trung nông", "B. Đại địa chủ", "C. Tư sản thành thị", "D. Quan lại cũ"],
+          "question": "Đối tượng nào nhiều nơi lẽ ra cần được xem xét, chiếu cố thận trọng hơn nhưng thực tế lại bị xử lý sai?",
+          "options": ["A. Gia đình có công với cách mạng", "B. Các nhà tư sản nước ngoài", "C. Công nhân thành thị", "D. Học sinh tiểu học"],
           "correctAnswer": "A",
-          "explanation": "Theo văn kiện, trung nông là lực lượng cần được đoàn kết chặt chẽ trong nông thôn."
+          "explanation": "Gia đình có công với cách mạng"
         },
         {
           "id": "event-1-tile-7",
           "index": 7,
           "questionType": "multiple_choice",
-          "question": "Đối tượng nào đáng lẽ phải được chiếu cố đúng mức nhưng thực tế nhiều nơi đã không làm?",
-          "options": ["A. Chỉ phú nông", "B. Chỉ thương nhân", "C. Địa chủ kháng chiến, gia đình có công, gia đình có con em đi bộ đội/làm cán bộ", "D. Chỉ cán bộ xã"],
-          "correctAnswer": "C",
-          "explanation": "Địa chủ kháng chiến, gia đình có công với cách mạng, gia đình có con em đi bộ đội hoặc làm cán bộ là các đối tượng lẽ ra phải được chiếu cố đúng mức."
+          "question": "Biểu hiện nào sau đây cho thấy sự vi phạm pháp chế và dân chủ trong quá trình thực hiện?",
+          "options": ["A. Tôn trọng đúng quy trình điều tra", "B. Dùng biện pháp đấu tranh quá mức, xử lý oan sai", "C. Luôn nghe ý kiến quần chúng đầy đủ", "D. Kiểm tra chặt chẽ trước mọi kết luận"],
+          "correctAnswer": "B",
+          "explanation": "Dùng biện pháp đấu tranh quá mức, xử lý oan sai"
         },
         {
           "id": "event-1-tile-8",
           "index": 8,
           "questionType": "multiple_choice",
-          "question": "Sai lầm nổi bật trong thực hiện cải cách ruộng đất được nêu trong văn kiện là gì?",
-          "options": ["A. Không tuyên truyền gì cả", "B. Mở rộng diện đả kích, đánh tràn lan", "C. Không phát động nông dân", "D. Không chia ruộng đất"],
+          "question": "Một nguyên nhân quan trọng khiến sai lầm trở nên nghiêm trọng là:",
+          "options": ["A. Có quá nhiều kiểm tra giám sát", "B. Thiếu điều tra, nghiên cứu cụ thể", "C. Có quá nhiều ý kiến phản biện", "D. Quá chú trọng thực tế Việt Nam"],
           "correctAnswer": "B",
-          "explanation": "Sai lầm nổi bật là mở rộng diện đả kích, đánh tràn lan, không phân biệt đúng đối tượng."
+          "explanation": "Thiếu điều tra, nghiên cứu cụ thể"
         },
         {
           "id": "event-1-tile-9",
           "index": 9,
           "questionType": "multiple_choice",
-          "question": "Sau 8 mảnh trên, sự kiện lịch sử đang được nói tới nhiều khả năng là gì?",
-          "options": ["A. Điện Biên Phủ 1954", "B. Kỳ họp Quốc hội thông qua Luật Cải cách ruộng đất và ban bố thi hành năm 1953", "C. Cải cách giáo dục năm 1950", "D. Hiến pháp 1959"],
-          "correctAnswer": "B",
-          "explanation": "Đây là câu hỏi gợi ý cuối cùng, giúp nhóm chưa đoán được có thể nhận diện sự kiện."
+          "question": "Nhận định nào đúng nhất về sai lầm của Đảng trong cải cách ruộng đất?",
+          "options": ["A. Sai hoàn toàn từ chủ trương đến mục tiêu", "B. Không có sai lầm đáng kể", "C. Sai lầm chủ yếu nằm ở lãnh đạo, chỉ đạo và tổ chức thực hiện", "D. Chỉ sai ở khâu tuyên truyền"],
+          "correctAnswer": "C",
+          "explanation": "Sai lầm chủ yếu nằm ở lãnh đạo, chỉ đạo và tổ chức thực hiện"
         }
       ]
     },
@@ -110,7 +110,7 @@
       "shortDescription": "Sự kiện này thể hiện giai đoạn Đảng và Chủ tịch Hồ Chí Minh trực tiếp kiểm điểm, tổng kết và sửa chữa những sai lầm đã xảy ra trong quá trình thực hiện Cải cách ruộng đất.",
       "historicalContext": "Sự kiện này thể hiện giai đoạn Đảng và Chủ tịch Hồ Chí Minh trực tiếp kiểm điểm, tổng kết và sửa chữa những sai lầm đã xảy ra trong quá trình thực hiện Cải cách ruộng đất.",
       "keyTakeaway": "Ý nghĩa sư phạm của vòng 2 là nhấn mạnh rằng Đảng đã mắc sai lầm trong nhận thức, lãnh đạo, chỉ đạo và tổ chức thực hiện, nhưng đồng thời cũng thể hiện tinh thần thẳng thắn nhận trách nhiệm, sửa sai và khắc phục hậu quả.",
-      "imageUrl": "/images/event-1.png",
+      "imageUrl": "/images/event-2.png",
       "imageCaption": "Chủ tịch Hồ Chí Minh nói chuyện tại Hội nghị toàn quốc tổng kết công tác sửa chữa những sai lầm trong quá trình thực hiện Cải cách ruộng đất (tháng 12/1957). (Ảnh: Tư liệu/TTXVN)",
       "answerKeywords": [
         "kiểm điểm sai lầm cải cách ruộng đất",
@@ -124,82 +124,82 @@
           "id": "event-2-tile-1",
           "index": 1,
           "questionType": "multiple_choice",
-          "question": "Hội nghị nào đã tập trung kiểm điểm công tác cải cách ruộng đất và chỉnh đốn tổ chức, đồng thời đề ra chính sách sửa sai?",
-          "options": ["A. Hội nghị Trung ương 5", "B. Hội nghị Trung ương 8", "C. Hội nghị Trung ương 10 (mở rộng)", "D. Hội nghị Trung ương 16"],
+          "question": "Sau khi phát hiện sai lầm trong cải cách ruộng đất, thái độ chính trị đúng đắn của Đảng là:",
+          "options": ["A. Im lặng để tránh ảnh hưởng uy tín", "B. Phủ nhận toàn bộ trách nhiệm", "C. Thẳng thắn kiểm điểm và sửa sai", "D. Chỉ giải quyết nội bộ, không thừa nhận sai lầm"],
           "correctAnswer": "C",
-          "explanation": "Hội nghị Trung ương lần thứ 10 (mở rộng) năm 1956 là hội nghị kiểm điểm và đề ra chính sách sửa sai."
+          "explanation": "Thẳng thắn kiểm điểm và sửa sai"
         },
         {
           "id": "event-2-tile-2",
           "index": 2,
           "questionType": "multiple_choice",
-          "question": "Theo Nghị quyết Trung ương 14, một nguyên nhân lớn của sai lầm là gì?",
-          "options": ["A. Quá nhiều tài liệu điều tra", "B. Thiếu điều tra, nghiên cứu cụ thể và đầy đủ", "C. Không có cán bộ nào", "D. Chỉ do thời tiết xấu"],
+          "question": "Một nội dung quan trọng của quá trình sửa sai là:",
+          "options": ["A. Giữ nguyên mọi kết luận cũ", "B. Khôi phục quyền lợi và danh dự cho người bị xử lý oan", "C. Tăng hình thức xử phạt", "D. Không xem xét lại hồ sơ cũ"],
           "correctAnswer": "B",
-          "explanation": "Thiếu điều tra, nghiên cứu cụ thể và đầy đủ là một nguyên nhân lớn dẫn đến các sai lầm trong thực hiện."
+          "explanation": "Khôi phục quyền lợi và danh dự cho người bị xử lý oan"
         },
         {
           "id": "event-2-tile-3",
           "index": 3,
           "questionType": "multiple_choice",
-          "question": "Nguyên tắc tổ chức nào của Đảng bị vi phạm trong một thời gian khá dài?",
-          "options": ["A. Tập trung dân chủ, lãnh đạo tập thể", "B. Tự do báo chí", "C. Tam quyền phân lập", "D. Kinh tế thị trường"],
-          "correctAnswer": "A",
-          "explanation": "Nguyên tắc tập trung dân chủ, lãnh đạo tập thể đã bị vi phạm trong một thời gian khá dài."
+          "question": "Việc sửa sai trong cải cách ruộng đất cho thấy điều gì?",
+          "options": ["A. Đảng né tránh trách nhiệm", "B. Đảng dám nhìn thẳng vào sự thật và khắc phục sai lầm", "C. Đảng phủ nhận toàn bộ cải cách ruộng đất", "D. Đảng không quan tâm đến hậu quả"],
+          "correctAnswer": "B",
+          "explanation": "Đảng dám nhìn thẳng vào sự thật và khắc phục sai lầm"
         },
         {
           "id": "event-2-tile-4",
           "index": 4,
           "questionType": "multiple_choice",
-          "question": "Văn kiện kỷ luật của Hội nghị Trung ương 10 phê bình tác phong nào?",
-          "options": ["A. Khoa học, thận trọng", "B. Quan liêu, mệnh lệnh, độc đoán, không lắng nghe quần chúng", "C. Quá dân chủ", "D. Quá mềm dẻo"],
-          "correctAnswer": "B",
-          "explanation": "Hội nghị phê bình tác phong quan liêu, mệnh lệnh, độc đoán, không lắng nghe quần chúng."
+          "question": "Một trong những nguyên nhân sâu xa dẫn đến sai lầm là:",
+          "options": ["A. Vi phạm nguyên tắc tập trung dân chủ và lãnh đạo tập thể", "B. Quá coi trọng ý kiến quần chúng", "C. Quá tôn trọng pháp luật", "D. Kiểm tra quá thường xuyên"],
+          "correctAnswer": "A",
+          "explanation": "Vi phạm nguyên tắc tập trung dân chủ và lãnh đạo tập thể"
         },
         {
           "id": "event-2-tile-5",
           "index": 5,
           "questionType": "multiple_choice",
-          "question": "Theo Nghị quyết Trung ương 14, Đảng đã nhấn mạnh quá đáng thế lực của lực lượng nào?",
-          "options": ["A. Công nhân", "B. Nông dân", "C. Giai cấp địa chủ", "D. Tiểu thương"],
-          "correctAnswer": "C",
-          "explanation": "Đảng đã nhấn mạnh quá đáng thế lực của giai cấp địa chủ, dẫn đến mở rộng diện đả kích."
+          "question": "Biểu hiện nào sau đây gắn với tác phong lãnh đạo sai lầm?",
+          "options": ["A. Dân chủ, lắng nghe, thận trọng", "B. Quan liêu, mệnh lệnh, độc đoán", "C. Điều tra kỹ thực tế", "D. Luôn tham khảo nhiều chiều"],
+          "correctAnswer": "B",
+          "explanation": "Quan liêu, mệnh lệnh, độc đoán"
         },
         {
           "id": "event-2-tile-6",
           "index": 6,
           "questionType": "multiple_choice",
-          "question": "Đồng thời, văn kiện cho rằng ta đã đánh giá quá thấp lực lượng nào ở nông thôn?",
-          "options": ["A. Lực lượng cách mạng của ta ở nông thôn", "B. Quân đội nước ngoài", "C. Giới công thương", "D. Trí thức đô thị"],
-          "correctAnswer": "A",
-          "explanation": "Văn kiện chỉ ra ta đã đánh giá quá thấp lực lượng cách mạng của ta ở nông thôn."
+          "question": "Mục đích của việc sửa sai không phải là:",
+          "options": ["A. Khôi phục lòng tin của nhân dân", "B. Sửa chữa hậu quả do xử lý sai gây ra", "C. Bảo vệ sự thật lịch sử", "D. Che giấu sai lầm để tránh phê bình"],
+          "correctAnswer": "D",
+          "explanation": "Che giấu sai lầm để tránh phê bình"
         },
         {
           "id": "event-2-tile-7",
           "index": 7,
           "questionType": "multiple_choice",
-          "question": "Một biện pháp sửa sai rất quan trọng đối với đảng viên bị xử trí sai là gì?",
-          "options": ["A. Cho nghỉ hưu sớm", "B. Trả lại đảng tịch", "C. Chuyển công tác bắt buộc", "D. Giữ nguyên quyết định cũ"],
+          "question": "Bài học lớn rút ra từ sai lầm trong cải cách ruộng đất là:",
+          "options": ["A. Có thể bỏ qua điều tra thực tế", "B. Cần tôn trọng thực tiễn, thận trọng trong lãnh đạo và thực hiện", "C. Chỉ cần mục tiêu đúng là đủ", "D. Có thể hy sinh pháp chế để đạt kết quả nhanh"],
           "correctAnswer": "B",
-          "explanation": "Trả lại đảng tịch cho những đảng viên bị xử trí sai là một biện pháp sửa sai quan trọng."
+          "explanation": "Cần tôn trọng thực tiễn, thận trọng trong lãnh đạo và thực hiện"
         },
         {
           "id": "event-2-tile-8",
           "index": 8,
           "questionType": "multiple_choice",
-          "question": "Đối với những người đã bị xử oan, văn kiện yêu cầu gì?",
-          "options": ["A. Im lặng để ổn định tình hình", "B. Hủy án cũ, trả lại danh dự, quan tâm gia đình", "C. Chỉ xin lỗi bằng miệng", "D. Không xem xét lại"],
-          "correctAnswer": "B",
-          "explanation": "Văn kiện yêu cầu hủy án cũ, trả lại danh dự và quan tâm đến gia đình những người bị xử oan."
+          "question": "Khi nói về cải cách ruộng đất, cách nhìn nào sau đây là phù hợp nhất?",
+          "options": ["A. Chỉ nhìn mặt tích cực, bỏ qua sai lầm", "B. Chỉ nhìn sai lầm, phủ nhận toàn bộ ý nghĩa lịch sử", "C. Nhìn nhận cả mặt mục tiêu, kết quả và những sai lầm nghiêm trọng trong thực hiện", "D. Không cần đánh giá lại"],
+          "correctAnswer": "C",
+          "explanation": "Nhìn nhận cả mặt mục tiêu, kết quả và những sai lầm nghiêm trọng trong thực hiện"
         },
         {
           "id": "event-2-tile-9",
           "index": 9,
           "questionType": "multiple_choice",
-          "question": "Sau 8 mảnh trên, sự kiện lịch sử đang được nói tới là gì?",
-          "options": ["A. Hội nghị Trung ương 10 (mở rộng) năm 1956 và công cuộc sửa sai cải cách ruộng đất", "B. Tổng tuyển cử 1946", "C. Hiệp định Giơnevơ", "D. Đại hội III của Đảng"],
-          "correctAnswer": "A",
-          "explanation": "Đây là câu hỏi gợi ý cuối cùng để nhận diện sự kiện: Hội nghị TW 10 (mở rộng) 1956 và công cuộc sửa sai."
+          "question": "Điểm đáng chú ý nhất trong quá trình sửa sai là:",
+          "options": ["A. Đảng hoàn toàn im lặng trước nhân dân", "B. Đảng thẳng thắn nhận khuyết điểm và tiến hành sửa chữa", "C. Đảng không thay đổi gì", "D. Đảng chỉ xử lý hình thức"],
+          "correctAnswer": "B",
+          "explanation": "Đảng thẳng thắn nhận khuyết điểm và tiến hành sửa chữa"
         }
       ]
     }
