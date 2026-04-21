@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* --- Premium Historical Color Palette --- */
+  --bg-primary: #12100e; /* Deep dark sepia/charcoal */
+  --bg-secondary: #1a1613; /* Slightly lighter deep tone */
+  --bg-card: rgba(30, 25, 20, 0.7); /* Glassmorphic dark brown */
+  
+  --accent-red: #c0392b; /* Revolutionary red */
+  --accent-gold: #d4af37; /* Metallic gold */
+  --accent-green: #27ae60; /* Success green */
+  --accent-blue: #2980b9;
+  
+  --text-primary: #f5f0e1; /* Off-white / parchment paper */
+  --text-secondary: #d1c5b4; /* Dimmer off-white */
+  --text-gold: #efd080;
+  
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --border-subtle: rgba(245, 240, 225, 0.1);
+
+  /* --- Spacing --- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* --- Box Shadows & Glows --- */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.8);
+  --glow-gold: 0 0 15px rgba(212, 175, 55, 0.3);
+  --glow-red: 0 0 20px rgba(192, 57, 43, 0.4);
+
+  /* --- Typography --- */
+  --font-heading: 'Cinzel', 'Playfair Display', serif;
+  --font-subheading: 'Playfair Display', serif;
+  --font-body: 'Lora', serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  
+  /* Cinematic Vignette Background */
+  background-image: radial-gradient(circle at center, #2a221d 0%, #12100e 80%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+/* Base Inputs */
+input, select, textarea {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-gold);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent-gold);
+  box-shadow: var(--glow-gold);
+}
+
+/* Glassmorphic Panel Utility */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Cool animated gradient text */
+.text-gradient {
+  background: linear-gradient(to right, #f5f0e1, #d4af37, #f5f0e1);
+  background-size: 200% auto;
+  color: #000;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Animations */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-pop-in {
+  animation: fadeInScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+/* Tile Grid Effects */
+.tile-btn {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tile-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+  transform: skewX(-20deg);
+  transition: all 0.5s;
+}
+
+.tile-btn:hover:not(:disabled)::before {
+  left: 150%;
+}
+
+.tile-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-gold) !important;
+}
+
+.tile-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-gold);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold);
+}

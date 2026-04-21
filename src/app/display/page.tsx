@@ -1,0 +1,389 @@
+"use client";
+
+// ============================================================
+// Display Page — "/display" — Cinematic TV View
+// ============================================================
+
+import { GameProvider, useGame } from "@/context/game-context";
+import { getTeamRanking, getLeadingTeams } from "@/lib/scoring";
+import { useEffect, useState } from "react";
+// canvas-confetti is not typed natively without @types/canvas-confetti, using require for simplicity
+// @ts-ignore
+import confetti from "canvas-confetti";
+
+export default function DisplayPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }} />;
+
+  return (
+    <GameProvider role="display">
+      <DisplayContent />
+    </GameProvider>
+  );
+}
+
+function DisplayContent() {
+  const { state, currentEvent, revealedCount } = useGame();
+
+  // Trigger confetti on event completion or game completion
+  useEffect(() => {
+    if (state.status === "event_completed" || state.status === "game_completed") {
+      fireConfetti();
+    }
+  }, [state.status, state.currentEventIndex]);
+
+  const fireConfetti = () => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+    
+    // Create a gold/red confetti palette
+    const colors = ['#d4af37', '#c0392b', '#f5f0e1'];
+
+    (function frame() {
+      // @ts-ignore
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      // @ts-ignore
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  };
+
+  const getBackgroundPosition = (idx: number) => {
+    const row = Math.floor((idx - 1) / 3);
+    const col = (idx - 1) % 3;
+    return `${col * 50}% ${row * 50}%`;
+  };
+
+  // === WAITING & SETUP ===
+  if (state.status === "setup" || !state.id) {
+    return (
+      <main className="animate-pop-in" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", position: "relative" }}>
+        <div className="glass-panel" style={{ padding: "4rem", textAlign: "center", zIndex: 1, maxWidth: "600px", width: "90%" }}>
+          <h1 className="text-gradient" style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>Giải Mã Bức Ảnh Lịch Sử</h1>
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, var(--accent-gold), transparent)', margin: '2rem 0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-red)', animation: 'pulse 1.5s infinite' }} />
+            <p style={{ fontSize: "1.5rem", color: "var(--text-secondary)", fontStyle: "italic" }}>
+              Đang chờ MC (Host) bắt đầu game...
+            </p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // === READY ===
+  if (state.status === "ready") {
+    return (
+      <main className="animate-pop-in" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <div className="glass-panel" style={{ padding: "4rem", textAlign: "center", maxWidth: "900px", width: "90%" }}>
+          <h1 className="text-gradient" style={{ fontSize: "3.5rem" }}>Các Đội Sẵn Sàng</h1>
+          <div style={{ display: "flex", gap: "24px", justifyContent: "center", flexWrap: "wrap", marginTop: "3rem" }}>
+            {state.teams.map((team, idx) => (
+              <div key={team.id} className="animate-slide-up" style={{
+                animationDelay: `${idx * 0.1}s`,
+                padding: "1.5rem 3rem",
+                borderRadius: "8px",
+                background: `linear-gradient(135deg, ${team.color}, #111)`,
+                border: `1px solid ${team.color}`,
+                color: "white",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                boxShadow: `0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px ${team.color}`,
+                textTransform: 'uppercase',
+                letterSpacing: '2px'
+              }}>
+                {team.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // === GAME COMPLETED ===
+  if (state.status === "game_completed") {
+    const ranking = getTeamRanking(state.teams);
+    return (
+      <main className="animate-pop-in" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <div className="glass-panel" style={{ padding: "4rem", textAlign: "center", width: "800px", maxWidth: "95%" }}>
+          <h1 className="text-gradient" style={{ fontSize: "4rem", textTransform: 'uppercase', letterSpacing: '4px' }}>🏆 Vinh Danh</h1>
+          <p style={{ color: 'var(--text-gold)', fontStyle: 'italic', fontSize: '1.2rem', marginTop: '1rem', marginBottom: '3rem' }}>
+            Kết quả giải mã không gian lịch sử
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {ranking.map((team, idx) => (
+              <div key={team.id} className="animate-slide-up" style={{
+                animationDelay: `${idx * 0.15}s`,
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "1.5rem 2rem",
+                background: team.rank === 1 ? 'linear-gradient(90deg, rgba(212,175,55,0.2), rgba(0,0,0,0.6))' : 'rgba(0,0,0,0.4)',
+                borderLeft: `6px solid ${team.rank === 1 ? 'var(--accent-gold)' : team.color}`,
+                borderRadius: "8px",
+                fontSize: "1.8rem",
+                boxShadow: team.rank === 1 ? 'var(--glow-gold)' : 'var(--shadow-sm)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                  <span style={{ fontSize: "2.5rem", width: '50px', textAlign: 'center' }}>
+                    {team.rank === 1 ? "🥇" : team.rank === 2 ? "🥈" : team.rank === 3 ? "🥉" : `#${team.rank}`}
+                  </span>
+                  <span style={{ color: team.rank === 1 ? 'var(--accent-gold)' : 'var(--text-primary)', fontWeight: team.rank === 1 ? "bold" : "normal" }}>
+                    {team.name}
+                  </span>
+                </div>
+                <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold', color: 'var(--text-gold)', fontSize: '2rem' }}>
+                  {team.score} <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>điểm</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // === MAIN GAME DISPLAY ===
+  const leaders = getLeadingTeams(state.teams);
+  const imageUrl = currentEvent?.imageUrl || "/images/placeholder.jpg"; // Placeholder if real image not available
+
+  return (
+    <main style={{ padding: "2rem 4rem", minHeight: "100vh", display: 'flex', flexDirection: 'column' }}>
+      {/* HEADER */}
+      <header className="animate-slide-up" style={{ textAlign: "center", marginBottom: "2rem", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
+        <div style={{ textAlign: 'left' }}>
+          <h1 className="text-gradient" style={{ fontSize: "2.5rem", letterSpacing: '2px', textTransform: 'uppercase' }}>Giải Mã Bức Ảnh Lịch Sử</h1>
+          <p style={{ fontSize: "1.4rem", color: "var(--text-gold)", fontFamily: 'var(--font-heading)' }}>
+            CHỦ ĐỀ: <span style={{ color: 'var(--text-primary)' }}>{state.theme}</span>
+          </p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '2px' }}>Sự kiện hiện tại</div>
+          <div style={{ fontSize: "2rem", color: "var(--accent-red)", fontWeight: 'bold', fontFamily: 'var(--font-heading)' }}>
+            {currentEvent?.title}
+          </div>
+        </div>
+      </header>
+
+      <div style={{ display: "flex", gap: "4rem", flex: 1, alignItems: "center", justifyContent: "center" }}>
+        
+        {/* LEFT: THE GRID */}
+        <div className="glass-panel animate-pop-in" style={{ padding: '2rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: 'var(--bg-primary)', padding: '0 1rem', border: '1px solid var(--accent-gold)', borderRadius: '20px', color: 'var(--accent-gold)', fontWeight: 'bold', letterSpacing: '2px' }}>
+            BỨC ẢNH BÍ ẨN
+          </div>
+          
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "4px",
+            width: "60vh",
+            height: "60vh",
+            background: "var(--bg-secondary)", // Grout color
+            border: "4px solid #3a2e24",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5)",
+          }}>
+            {currentEvent?.tiles.map((tile) => {
+              const bgPos = getBackgroundPosition(tile.index);
+              return (
+                <div key={tile.id} style={{
+                  position: 'relative',
+                  background: tile.revealed ? "transparent" : "#2a221d",
+                  boxShadow: tile.revealed ? "none" : "inset 0 0 30px rgba(0,0,0,0.8)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                  transformStyle: "preserve-3d",
+                  transform: tile.revealed ? "rotateY(180deg)" : "rotateY(0)",
+                }}>
+                  {/* Front side (Unrevealed) */}
+                  <div style={{
+                    position: 'absolute', width: '100%', height: '100%', 
+                    backfaceVisibility: 'hidden',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'radial-gradient(circle, #3a2e24, #1a1613)',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                  }}>
+                     <span style={{ fontSize: "3rem", color: "rgba(212,175,55,0.4)", fontFamily: 'var(--font-heading)', fontWeight: 'bold' }}>
+                       {tile.index}
+                     </span>
+                  </div>
+                  
+                  {/* Back side (Revealed Image Slice) */}
+                  <div style={{
+                    position: 'absolute', width: '100%', height: '100%',
+                    backfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                    backgroundImage: `url(${imageUrl})`,
+                    backgroundSize: '300% 300%',
+                    backgroundPosition: bgPos,
+                    filter: 'sepia(30%) contrast(110%) brightness(90%)' // vintage feel
+                  }} />
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ textAlign: "center", marginTop: "1.5rem", fontSize: "1.2rem", letterSpacing: '1px', color: 'var(--text-secondary)' }}>
+            Tiến độ: <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>{revealedCount}/9</span> mảnh ghép
+          </div>
+        </div>
+
+        {/* RIGHT: SCOREBOARD & STATUS */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1, maxWidth: '400px' }}>
+          
+          <div className="glass-panel animate-slide-up" style={{ padding: '2rem' }}>
+            <h3 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", textAlign: 'center', textTransform: 'uppercase', color: 'var(--text-gold)', letterSpacing: '2px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              Bảng Vàng
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {state.teams.map((team) => {
+                const isLeader = leaders.some((l) => l.id === team.id) && team.score > 0;
+                return (
+                  <div key={team.id} style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "1rem 1.5rem",
+                    background: isLeader ? "linear-gradient(90deg, rgba(212,175,55,0.15), transparent)" : "rgba(0,0,0,0.3)",
+                    borderLeft: `4px solid ${isLeader ? 'var(--accent-gold)' : team.color}`,
+                    borderRadius: "6px",
+                    transition: 'all 0.3s ease',
+                    boxShadow: isLeader ? '0 0 15px rgba(212,175,55,0.2)' : 'none'
+                  }}>
+                    <span style={{ fontSize: '1.2rem', color: isLeader ? 'white' : 'var(--text-secondary)', fontWeight: isLeader ? 'bold' : 'normal' }}>
+                      {team.name} {isLeader && "👑"}
+                    </span>
+                    <span style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', color: isLeader ? 'var(--text-gold)' : 'white', fontWeight: 'bold' }}>
+                      {team.score}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ACTION MESSAGE LOG */}
+          {state.lastActionMessage && (
+            <div className="glass-panel animate-pop-in" style={{
+              padding: "1.5rem",
+              background: "linear-gradient(to right, rgba(192,57,43,0.1), rgba(0,0,0,0.6))",
+              borderLeft: "4px solid var(--accent-red)",
+              fontSize: "1.2rem",
+              fontStyle: 'italic',
+              lineHeight: 1.5
+            }}>
+              {state.lastActionMessage}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* QUESTION OVERLAY */}
+      {state.status === "question_open" && currentEvent && (
+        <div className="animate-pop-in" style={{
+          position: "fixed", inset: 0, background: "rgba(10, 8, 6, 0.95)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div className="glass-panel" style={{
+            padding: "4rem", maxWidth: "900px", width: "90%", textAlign: "center",
+            borderTop: '4px solid var(--accent-gold)'
+          }}>
+            {(() => {
+              const tile = currentEvent.tiles.find((t) => t.id === state.selectedTileId);
+              if (!tile) return null;
+              return (
+                <>
+                  <div style={{ color: 'var(--accent-gold)', fontSize: '1.2rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1rem' }}>
+                    Câu hỏi số {tile.index}
+                  </div>
+                  <h2 style={{ fontSize: "2.8rem", lineHeight: 1.4, margin: "2rem 0", fontFamily: 'var(--font-heading)' }}>
+                    {tile.question}
+                  </h2>
+                  {tile.options && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: "3rem", textAlign: "left" }}>
+                      {tile.options.map((opt, i) => (
+                        <div key={i} style={{
+                          padding: "1.5rem", fontSize: "1.4rem",
+                          background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+                          borderRadius: "8px", color: 'var(--text-secondary)'
+                        }}>
+                          {opt}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
+      {/* EVENT COMPLETED OVERLAY */}
+      {state.status === "event_completed" && currentEvent && (
+        <div className="animate-pop-in" style={{
+          position: "fixed", inset: 0, background: "rgba(10, 8, 6, 0.95)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
+          backdropFilter: 'blur(15px)'
+        }}>
+          <div className="glass-panel" style={{
+            padding: "0", maxWidth: "1000px", width: "95%", textAlign: "center",
+            display: 'flex', flexDirection: 'column', overflow: 'hidden'
+          }}>
+            <div style={{ height: '350px', background: `url(${imageUrl}) center/cover no-repeat`, position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, var(--bg-card))' }} />
+              {currentEvent.imageCaption && (
+                 <div style={{ position: 'absolute', bottom: '15px', right: '20px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic', zIndex: 2, background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: '4px' }}>
+                   📷 {currentEvent.imageCaption}
+                 </div>
+              )}
+            </div>
+            <div style={{ padding: '3rem 4rem', position: 'relative', zIndex: 1, marginTop: '-100px' }}>
+              <div style={{ background: 'var(--accent-red)', color: 'white', display: 'inline-block', padding: '0.5rem 1.5rem', borderRadius: '20px', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+                Đã Giải Mã
+              </div>
+              <h2 className="text-gradient" style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+                {currentEvent.displayTitle}
+              </h2>
+              <p style={{ fontSize: "1.4rem", color: 'var(--text-primary)', marginBottom: "1.5rem", fontStyle: 'italic' }}>
+                {currentEvent.shortDescription}
+              </p>
+              <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '2rem 0' }} />
+              <p style={{ fontSize: "1.2rem", color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: '2rem', textAlign: 'justify' }}>
+                {currentEvent.historicalContext}
+              </p>
+              <div style={{ background: 'rgba(212,175,55,0.1)', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)' }}>
+                <p style={{ fontSize: "1.3rem", fontWeight: "bold", color: "var(--text-gold)", textAlign: 'left' }}>
+                  📌 Bài học lịch sử: <span style={{ color: 'var(--text-primary)', fontWeight: 'normal' }}>{currentEvent.keyTakeaway}</span>
+                </p>
+              </div>
+              {currentEvent.guessedByTeamId && (
+                <div className="animate-pop-in" style={{ marginTop: "2rem", fontSize: "1.5rem", color: "var(--accent-green)", fontWeight: 'bold', background: 'rgba(39, 174, 96, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--accent-green)' }}>
+                  🏆 Đoán đúng bởi: {state.teams.find((t) => t.id === currentEvent.guessedByTeamId)?.name}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}

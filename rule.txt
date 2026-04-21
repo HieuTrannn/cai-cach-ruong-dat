@@ -1,0 +1,1134 @@
+Dưới đây là **document tổng quan + đặc tả chi tiết** để Claude có thể đọc và build website theo đúng cơ chế game mới.
+Mình hiểu bạn đang yêu cầu **NestJS**, nên mình viết theo hướng:
+
+* **NestJS làm backend chính**
+* **frontend đơn giản được phục vụ từ NestJS** bằng static files hoặc template
+* có thể chạy như **một website monolith**
+* ưu tiên **dùng trong lớp học, chiếu TV, host điều khiển bằng laptop**
+
+---
+
+# DOCUMENT ĐẶC TẢ WEBSITE
+
+## Tên dự án
+
+**Giải mã bức ảnh lịch sử**
+
+## Chủ đề nội dung
+
+**Việc cải cách ruộng đất năm 1953–1956 Đảng ta đã mắc sai lầm như thế nào?**
+
+## Mục tiêu sản phẩm
+
+Xây dựng một website game phục vụ **thuyết trình trên lớp**, trong đó cả lớp cùng tham gia theo nhóm.
+Nhóm thuyết trình là **host/MC**, điều khiển game trên laptop và chiếu lên TV hoặc màn hình lớn.
+
+Website không phải là game cho từng người chơi tự dùng điện thoại.
+Đây là **game điều phối tập thể**, nơi:
+
+* cả lớp nhìn chung một màn hình,
+* các nhóm giơ tay giành quyền trả lời,
+* host tự xác nhận đúng/sai,
+* hệ thống tự mở mảnh ghép và cộng điểm.
+
+---
+
+# 1. Tổng quan game là gì
+
+“Giải mã bức ảnh lịch sử” là một game đoán hình ảnh theo nhóm.
+
+Game gồm **2 sự kiện lịch sử**.
+Mỗi sự kiện có:
+
+* 1 ảnh tư liệu lịch sử,
+* ảnh được chia thành **9 mảnh ghép** theo lưới **3x3**,
+* mỗi mảnh ghép tương ứng với **1 câu hỏi**.
+
+Luật chơi:
+
+1. Các nhóm lần lượt chọn một ô.
+2. Host đọc câu hỏi của ô đó.
+3. Nhóm nào được quyền trả lời sẽ trả lời trực tiếp bằng miệng.
+4. Host bấm:
+
+   * **Đúng** → ô được mở và nhóm được cộng điểm.
+   * **Sai** → ô không mở, không cộng điểm.
+5. Khi đã mở một số mảnh, nhóm có thể đoán **đó là sự kiện gì**.
+6. Nếu đoán đúng, nhóm đó được **điểm thưởng cao hơn điểm từng mảnh ghép**.
+7. Kết thúc sự kiện 1 thì chuyển sang sự kiện 2.
+8. Hết 2 sự kiện thì hiển thị bảng xếp hạng chung cuộc.
+
+Game này phải tạo được cảm giác:
+
+* dễ chơi,
+* nhanh,
+* rõ luật,
+* dễ chiếu lên TV,
+* lớp học tương tác tốt,
+* nội dung lịch sử được dẫn dắt tự nhiên.
+
+---
+
+# 2. Mục tiêu học thuật của game
+
+Game không chỉ để vui mà phải phục vụ thuyết trình.
+
+Sau khi chơi xong, người học phải nắm được:
+
+* cải cách ruộng đất là một chủ trương lớn trong bối cảnh lịch sử lúc đó,
+* sai lầm chủ yếu nằm ở **lãnh đạo, chỉ đạo và tổ chức thực hiện**,
+* các sai lầm nổi bật gồm:
+
+  * áp dụng máy móc,
+  * phân loại giai cấp sai,
+  * mở rộng diện quy kết,
+  * vi phạm pháp chế và dân chủ,
+  * dùng biện pháp đấu tranh quá mức,
+* Đảng đã **thẳng thắn kiểm điểm, nhận sai và sửa sai**.
+
+Website không cần giải thích toàn bộ kiến thức ngay từ đầu.
+Nội dung phải được truyền tải dần qua:
+
+* câu hỏi,
+* mảnh ảnh được mở,
+* phần công bố đáp án,
+* lời chốt của host.
+
+---
+
+# 3. Phạm vi hệ thống
+
+## Trong phạm vi
+
+Website cần hỗ trợ:
+
+1. Màn hình mở đầu
+2. Màn hình chọn / bắt đầu game
+3. Màn hình chơi chính
+4. Hiển thị 2 sự kiện
+5. Hiển thị ảnh 3x3 cho từng sự kiện
+6. Mở câu hỏi theo mảnh ghép
+7. Host chấm đúng/sai thủ công
+8. Tự động cộng điểm
+9. Cho phép đoán tên sự kiện
+10. Tính điểm thưởng khi đoán đúng
+11. Chuyển vòng
+12. Bảng điểm chung cuộc
+13. Reset game
+14. Dùng tốt trên màn hình lớn 16:9
+
+## Ngoài phạm vi
+
+Không cần làm:
+
+* đăng nhập tài khoản
+* mỗi nhóm chơi bằng điện thoại riêng
+* chat realtime giữa học sinh
+* database phức tạp
+* quản trị nhiều giáo viên
+* tạo nội dung online quá phức tạp
+* multiplayer network cho từng team client
+
+---
+
+# 4. Kiểu triển khai được yêu cầu
+
+## Kiến trúc đề xuất
+
+Dùng **NestJS monolith**.
+
+NestJS sẽ:
+
+* phục vụ API
+* quản lý state của game
+* phục vụ frontend tĩnh hoặc template-rendered pages
+* nếu cần thì dùng WebSocket để sync giữa màn hình host và màn hình display
+
+## Khuyến nghị triển khai
+
+Có 2 route chính:
+
+* `/host`
+  Dành cho nhóm thuyết trình điều khiển game
+
+* `/display`
+  Dành cho màn hình TV / máy chiếu
+
+Nếu chỉ có 1 laptop cắm HDMI lên TV thì có thể dùng:
+
+* chỉ mở `/host`
+
+Nếu muốn đẹp và chuyên nghiệp hơn:
+
+* laptop host mở `/host`
+* TV mở `/display`
+
+Hai màn hình phải đồng bộ cùng một session game.
+
+---
+
+# 5. Vai trò người dùng
+
+## 5.1 Host / MC
+
+Là nhóm thuyết trình.
+
+Quyền:
+
+* tạo game session
+* nhập danh sách nhóm
+* bắt đầu game
+* chọn sự kiện
+* chọn ô
+* mở popup câu hỏi
+* đánh dấu đúng / sai
+* nhập hoặc chọn nhóm trả lời
+* xác nhận đoán đúng sự kiện
+* chuyển sang vòng tiếp theo
+* kết thúc game
+* reset game
+
+## 5.2 Display Viewer
+
+Là cả lớp nhìn trên TV.
+
+Chỉ có quyền xem:
+
+* ảnh bí ẩn
+* ô đã mở / chưa mở
+* bảng điểm
+* tên vòng
+* trạng thái hiện tại
+* kết quả đoán đúng / sai
+
+## 5.3 Teams
+
+Các nhóm trong lớp không thao tác trực tiếp trên website.
+Các nhóm tham gia **ngoại tuyến** bằng cách:
+
+* giơ tay,
+* phát biểu miệng,
+* host tự chọn nhóm được quyền trả lời.
+
+Đây là điểm cực kỳ quan trọng.
+Claude phải hiểu rằng:
+**website không cần làm giao diện riêng cho từng nhóm chơi**.
+
+---
+
+# 6. Luồng chơi chuẩn
+
+## 6.1 Màn hình mở đầu
+
+Hiển thị:
+
+* tên game
+* tiêu đề bài thuyết trình
+* nút “Bắt đầu”
+* nút “Thiết lập nhóm”
+
+## 6.2 Thiết lập nhóm
+
+Host nhập:
+
+* số nhóm
+* tên từng nhóm
+
+Ví dụ:
+
+* Nhóm 1
+* Nhóm 2
+* Nhóm 3
+* Nhóm 4
+
+Sau đó bấm “Tạo phiên chơi”.
+
+## 6.3 Bắt đầu vòng 1
+
+Hiển thị:
+
+* tên sự kiện 1 dưới dạng ẩn
+* ảnh bị che bởi 9 ô
+* danh sách các nhóm và điểm hiện tại
+* nút chọn ô
+
+## 6.4 Chọn ô
+
+Khi host chọn một ô:
+
+* website mở popup câu hỏi
+* popup hiển thị:
+
+  * mã ô
+  * nội dung câu hỏi
+  * nếu là trắc nghiệm thì hiển thị A/B/C/D
+  * nút “Đúng”
+  * nút “Sai”
+  * chọn nhóm được cộng điểm
+
+## 6.5 Trả lời đúng
+
+Khi host bấm “Đúng”:
+
+* ô đó được mở
+* ảnh phía sau hiện ra đúng phần của ô
+* nhóm được cộng điểm
+* có animation mở ô
+* có thông báo “Nhóm X trả lời đúng”
+
+## 6.6 Trả lời sai
+
+Khi host bấm “Sai”:
+
+* ô không mở
+* không cộng điểm
+* có thể hiển thị đáp án đúng ngắn gọn
+* game quay về trạng thái chờ chọn ô tiếp theo
+
+## 6.7 Đoán sự kiện
+
+Bất kỳ lúc nào sau khi ít nhất 1 ô đã mở, host có thể bấm “Đoán sự kiện”.
+
+Popup đoán sự kiện gồm:
+
+* chọn nhóm đoán
+* nhập tên sự kiện hoặc chọn từ danh sách đáp án cấu hình sẵn
+* nút xác nhận đúng / sai
+
+Nếu đúng:
+
+* cộng điểm thưởng tùy số ô đã mở
+* mở toàn bộ ảnh
+* hiển thị tên sự kiện
+* hiển thị mô tả ngắn về ý nghĩa lịch sử
+* cho phép sang vòng tiếp theo
+
+Nếu sai:
+
+* không cộng điểm
+* quay lại màn chính
+* tiếp tục chọn ô
+
+## 6.8 Kết thúc vòng
+
+Kết thúc khi:
+
+* có nhóm đoán đúng sự kiện, hoặc
+* cả 9 ô đã mở
+
+Sau đó hiển thị:
+
+* tên sự kiện
+* ảnh đầy đủ
+* mô tả tóm tắt
+* nút “Sang sự kiện tiếp theo”
+
+## 6.9 Kết thúc game
+
+Sau khi xong 2 sự kiện:
+
+* hiển thị bảng điểm cuối
+* xếp hạng các nhóm
+* nhóm thắng
+* nút “Chơi lại”
+
+---
+
+# 7. Luật tính điểm
+
+## Điểm mở mảnh ghép
+
+* Trả lời đúng 1 câu hỏi: **10 điểm**
+
+## Điểm đoán sự kiện
+
+Phải cao hơn điểm mở ô.
+
+Đề xuất:
+
+* đoán đúng khi mới mở **1–3 ô**: **40 điểm**
+* đoán đúng khi đã mở **4–6 ô**: **30 điểm**
+* đoán đúng khi đã mở **7–8 ô**: **20 điểm**
+* đoán đúng khi đã mở đủ 9 ô: **10 điểm**
+
+## Quy tắc cộng điểm
+
+* một câu đúng chỉ cộng cho 1 nhóm
+* một sự kiện chỉ có thể được đoán đúng 1 lần
+* sau khi đoán đúng thì khóa toàn bộ các ô còn lại của sự kiện đó
+
+---
+
+# 8. Nội dung game mặc định
+
+Game có 2 sự kiện:
+
+## Sự kiện 1
+
+**Ban hành Luật Cải cách ruộng đất năm 1953**
+
+* 1 ảnh lịch sử
+* 9 câu hỏi
+* đáp án cuối: tên sự kiện
+
+## Sự kiện 2
+
+**Kiểm điểm sai lầm và sửa sai trong cải cách ruộng đất giai đoạn 1956**
+
+* 1 ảnh lịch sử
+* 9 câu hỏi
+* đáp án cuối: tên sự kiện
+
+Mỗi sự kiện phải có:
+
+* `id`
+* `title`
+* `displayTitle`
+* `shortDescription`
+* `imageUrl`
+* `gridSize = 3`
+* `tiles[]`
+* `eventAnswerKeywords[]`
+
+---
+
+# 9. Yêu cầu giao diện
+
+## 9.1 Phong cách thị giác
+
+Website phải đi theo phong cách:
+
+* lịch sử
+* nghiêm túc
+* rõ ràng
+* dễ nhìn trên TV
+
+Màu sắc gợi ý:
+
+* nền giấy cũ / be / nâu nhạt
+* đỏ sẫm
+* đen
+* vàng cổ
+* trắng ngà
+
+Không dùng phong cách quá hoạt hình.
+
+## 9.2 Yêu cầu hiển thị
+
+Vì trình chiếu lớp học nên:
+
+* chữ lớn
+* tương phản cao
+* nút dễ bấm
+* nhìn được từ xa
+* layout tỷ lệ 16:9
+* bảng điểm luôn nhìn rõ
+
+## 9.3 Các vùng giao diện chính
+
+Màn hình chơi nên có 4 vùng:
+
+### A. Header
+
+* tên game
+* tên vòng / sự kiện hiện tại
+* trạng thái game
+
+### B. Khu vực ảnh 3x3
+
+* 9 ô
+* ô chưa mở: hiện dấu `?`
+* ô đã mở: hiện đúng phần ảnh
+* ô đã trả lời sai nhưng chưa mở: vẫn giữ che
+
+### C. Bảng điểm
+
+* tên nhóm
+* điểm hiện tại
+* highlight nhóm dẫn đầu
+
+### D. Thanh điều khiển host
+
+* chọn ô
+* mở câu hỏi
+* đoán sự kiện
+* sang vòng tiếp
+* reset
+
+---
+
+# 10. Cơ chế hiển thị ảnh 3x3
+
+Ảnh gốc sẽ được chia logic thành 9 tile.
+
+Có 2 cách build:
+
+## Cách 1: Dùng CSS background-position
+
+* chỉ cần 1 ảnh gốc
+* mỗi tile là 1 div
+* khi mở tile, set background-image cùng 1 ảnh
+* mỗi tile dùng background-position khác nhau
+* đây là cách nên dùng
+
+## Cách 2: Cắt ảnh thật thành 9 file riêng
+
+* không cần thiết
+* quản lý file nhiều hơn
+
+Khuyến nghị: **dùng CSS background-position**.
+
+---
+
+# 11. Dạng câu hỏi
+
+Mỗi tile có 1 câu hỏi.
+
+Nên hỗ trợ 3 loại:
+
+## 11.1 Multiple Choice
+
+Ví dụ:
+
+* question
+* options A/B/C/D
+* correctOption
+
+## 11.2 True/False
+
+Ví dụ:
+
+* statement
+* correctAnswer: true/false
+
+## 11.3 Short Answer
+
+Ví dụ:
+
+* question
+* acceptedAnswers: string[]
+
+Tuy nhiên với game trên lớp, host tự chấm nên backend vẫn nên cho phép:
+
+* bấm “Đúng”
+* bấm “Sai”
+
+Tức là đáp án trong hệ thống chủ yếu để:
+
+* hiển thị cho host tham khảo
+* show explanation khi cần
+
+Chứ không phải auto chấm theo input học sinh.
+
+---
+
+# 12. Yêu cầu đặc biệt cho host
+
+Host là người điều khiển toàn bộ game nên `/host` phải tối ưu.
+
+## Chức năng bắt buộc
+
+* click chọn ô trực tiếp
+* mở popup câu hỏi
+* chọn nhóm trả lời đúng
+* bấm đúng/sai nhanh
+* đoán sự kiện nhanh
+* xem câu trả lời đúng
+* xem mô tả giải thích ngắn
+
+## Keyboard shortcuts nên có
+
+* `1–9`: chọn nhanh ô
+* `C`: đánh dấu đúng
+* `W`: đánh dấu sai
+* `G`: mở popup đoán sự kiện
+* `N`: sang vòng tiếp
+* `R`: reset
+
+Không bắt buộc nhưng rất hữu ích khi thuyết trình.
+
+---
+
+# 13. Yêu cầu cho màn hình display
+
+`/display` chỉ dùng để chiếu TV nên phải rất sạch.
+
+Hiển thị:
+
+* tên game
+* ảnh 3x3 lớn
+* bảng điểm
+* thông báo trạng thái
+* hiệu ứng mở ô
+* kết quả đoán sự kiện
+
+Không hiển thị:
+
+* đáp án chi tiết
+* nút admin
+* popup quản trị phức tạp
+
+---
+
+# 14. Game state cần quản lý
+
+Hệ thống cần quản lý trạng thái phiên chơi.
+
+## Session state
+
+```ts
+type GameStatus =
+  | 'setup'
+  | 'ready'
+  | 'playing'
+  | 'question_open'
+  | 'guess_open'
+  | 'event_completed'
+  | 'game_completed';
+```
+
+## State tổng
+
+```ts
+interface GameSessionState {
+  id: string;
+  title: string;
+  status: GameStatus;
+  currentEventIndex: number;
+  teams: TeamState[];
+  events: EventState[];
+  selectedTileId: string | null;
+  lastActionMessage: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+## Team state
+
+```ts
+interface TeamState {
+  id: string;
+  name: string;
+  score: number;
+}
+```
+
+## Event state
+
+```ts
+interface EventState {
+  id: string;
+  title: string;
+  shortDescription: string;
+  imageUrl: string;
+  answerKeywords: string[];
+  isCompleted: boolean;
+  tiles: TileState[];
+}
+```
+
+## Tile state
+
+```ts
+interface TileState {
+  id: string;
+  index: number; // 1..9
+  questionType: 'multiple_choice' | 'true_false' | 'short_answer';
+  question: string;
+  options?: string[];
+  correctAnswer: string | boolean | string[];
+  explanation?: string;
+  revealed: boolean;
+  attempted: boolean;
+}
+```
+
+---
+
+# 15. Dữ liệu seed ban đầu
+
+Nội dung game nên được cấu hình bằng file JSON để Claude dễ build.
+
+Ví dụ:
+
+```json
+{
+  "gameTitle": "Giải mã bức ảnh lịch sử",
+  "theme": "Việc cải cách ruộng đất năm 1953–1956 Đảng ta đã mắc sai lầm như thế nào?",
+  "events": [
+    {
+      "id": "event-1",
+      "title": "Sự kiện 1",
+      "displayTitle": "Ban hành Luật Cải cách ruộng đất năm 1953",
+      "shortDescription": "Vòng 1 giúp người chơi nhận diện bối cảnh ban hành chính sách.",
+      "imageUrl": "/assets/images/event-1.jpg",
+      "answerKeywords": [
+        "luật cải cách ruộng đất 1953",
+        "quốc hội thông qua luật cải cách ruộng đất",
+        "ban hành luật cải cách ruộng đất"
+      ],
+      "tiles": []
+    },
+    {
+      "id": "event-2",
+      "title": "Sự kiện 2",
+      "displayTitle": "Kiểm điểm sai lầm và sửa sai năm 1956",
+      "shortDescription": "Vòng 2 nhấn mạnh việc kiểm điểm, nhận sai và sửa sai.",
+      "imageUrl": "/assets/images/event-2.jpg",
+      "answerKeywords": [
+        "kiểm điểm sai lầm cải cách ruộng đất",
+        "sửa sai cải cách ruộng đất 1956",
+        "hội nghị trung ương 10 mở rộng"
+      ],
+      "tiles": []
+    }
+  ]
+}
+```
+
+---
+
+# 16. API đề xuất cho NestJS
+
+## 16.1 Session APIs
+
+### Tạo session
+
+`POST /api/game/session`
+
+Request:
+
+```json
+{
+  "title": "Giải mã bức ảnh lịch sử",
+  "teamNames": ["Nhóm 1", "Nhóm 2", "Nhóm 3", "Nhóm 4"]
+}
+```
+
+Response:
+
+```json
+{
+  "sessionId": "abc123",
+  "status": "ready"
+}
+```
+
+### Lấy state hiện tại
+
+`GET /api/game/session/:sessionId`
+
+### Reset session
+
+`POST /api/game/session/:sessionId/reset`
+
+---
+
+## 16.2 Event APIs
+
+### Bắt đầu event hiện tại
+
+`POST /api/game/session/:sessionId/start`
+
+### Sang event tiếp theo
+
+`POST /api/game/session/:sessionId/next-event`
+
+### Kết thúc game
+
+`POST /api/game/session/:sessionId/finish`
+
+---
+
+## 16.3 Tile APIs
+
+### Chọn tile
+
+`POST /api/game/session/:sessionId/select-tile`
+
+Request:
+
+```json
+{
+  "eventId": "event-1",
+  "tileId": "tile-3"
+}
+```
+
+### Chấm câu hỏi
+
+`POST /api/game/session/:sessionId/judge-answer`
+
+Request:
+
+```json
+{
+  "eventId": "event-1",
+  "tileId": "tile-3",
+  "teamId": "team-2",
+  "isCorrect": true
+}
+```
+
+Hành vi:
+
+* nếu `isCorrect = true` → reveal tile + cộng điểm
+* nếu `false` → chỉ mark attempted
+
+---
+
+## 16.4 Guess APIs
+
+### Mở mode đoán sự kiện
+
+`POST /api/game/session/:sessionId/open-guess`
+
+### Chấm đoán sự kiện
+
+`POST /api/game/session/:sessionId/judge-guess`
+
+Request:
+
+```json
+{
+  "eventId": "event-1",
+  "teamId": "team-1",
+  "guessText": "Luật Cải cách ruộng đất năm 1953",
+  "isCorrect": true
+}
+```
+
+Nếu `isCorrect = true`:
+
+* cộng điểm thưởng theo số tile đã reveal
+* mark event completed
+* reveal full image
+
+---
+
+# 17. WebSocket Gateway đề xuất
+
+Nếu dùng 2 màn hình `/host` và `/display`, nên dùng WebSocket.
+
+## Gateway
+
+`GameGateway`
+
+Phát các event:
+
+* `session.updated`
+* `tile.selected`
+* `question.opened`
+* `tile.revealed`
+* `answer.judged`
+* `guess.opened`
+* `guess.judged`
+* `event.completed`
+* `score.updated`
+* `game.completed`
+
+Mỗi khi host thao tác ở `/host`, `/display` phải update gần như ngay lập tức.
+
+Nếu Claude muốn đơn giản hơn, có thể dùng polling 1–2 giây/lần.
+Nhưng khuyến nghị dùng **Socket.IO với NestJS Gateway**.
+
+---
+
+# 18. Cấu trúc project NestJS đề xuất
+
+```bash
+src/
+  app.module.ts
+
+  modules/
+    game/
+      game.module.ts
+      game.controller.ts
+      game.service.ts
+      game.gateway.ts
+      dto/
+        create-session.dto.ts
+        select-tile.dto.ts
+        judge-answer.dto.ts
+        judge-guess.dto.ts
+      interfaces/
+        game-session.interface.ts
+        team.interface.ts
+        event.interface.ts
+        tile.interface.ts
+
+    content/
+      content.module.ts
+      content.service.ts
+      game-content.json
+
+    storage/
+      storage.module.ts
+      storage.service.ts
+
+  common/
+    utils/
+      scoring.util.ts
+      answer-matcher.util.ts
+
+public/
+  host/
+    index.html
+    host.css
+    host.js
+  display/
+    index.html
+    display.css
+    display.js
+  assets/
+    images/
+      event-1.jpg
+      event-2.jpg
+```
+
+---
+
+# 19. Logic tính điểm cần tách riêng
+
+Tạo util riêng:
+
+```ts
+function getGuessBonus(revealedCount: number): number {
+  if (revealedCount <= 3) return 40;
+  if (revealedCount <= 6) return 30;
+  if (revealedCount <= 8) return 20;
+  return 10;
+}
+```
+
+Điểm câu hỏi:
+
+```ts
+const TILE_CORRECT_SCORE = 10;
+```
+
+---
+
+# 20. Logic kiểm tra đoán sự kiện
+
+Có 2 cách:
+
+## Cách 1: Host tự xác nhận đúng/sai
+
+Đơn giản nhất, phù hợp nhất với thuyết trình.
+
+## Cách 2: So khớp keyword
+
+Ví dụ:
+
+* bỏ dấu
+* lowercase
+* trim
+* so với `answerKeywords`
+
+Khuyến nghị:
+
+* frontend hiển thị câu người chơi đoán
+* host bấm đúng/sai thủ công
+
+---
+
+# 21. Lưu trữ dữ liệu
+
+## Mức tối giản
+
+* content: lưu trong `game-content.json`
+* state phiên chơi: lưu trong memory
+* optional: snapshot state ra file JSON sau mỗi action
+
+## Không cần database ở bản demo
+
+Vì đây là game trình chiếu 1 buổi, không cần hệ thống dữ liệu phức tạp.
+
+Nếu Claude muốn tăng độ bền:
+
+* dùng SQLite
+* hoặc file-based persistence
+
+Nhưng mặc định bản build đầu tiên nên **ưu tiên đơn giản**.
+
+---
+
+# 22. Nội dung hiển thị sau khi đoán đúng
+
+Khi một sự kiện được đoán đúng, hiển thị overlay:
+
+* tên sự kiện
+* ảnh đầy đủ
+* mô tả 2–4 câu
+* nút “Tiếp tục”
+
+Ví dụ:
+
+```ts
+interface EventRevealContent {
+  eventTitle: string;
+  eventSummary: string;
+  keyTakeaway: string;
+}
+```
+
+Phần này giúp nối game với phần thuyết trình.
+
+---
+
+# 23. Yêu cầu UX quan trọng
+
+Claude cần ưu tiên các điểm này:
+
+## 23.1 Nhanh
+
+Host bấm càng ít càng tốt.
+
+## 23.2 Không rối
+
+Không được làm giao diện giống dashboard admin phức tạp.
+
+## 23.3 TV-friendly
+
+Mọi thứ phải đủ lớn để nhìn từ xa.
+
+## 23.4 Chống thao tác nhầm
+
+Khi bấm đúng/sai hoặc reset nên có confirm cho các action nguy hiểm.
+
+## 23.5 Dễ demo
+
+Khởi động nhanh, reset nhanh, không cần login.
+
+---
+
+# 24. Animation gợi ý
+
+Không cần quá nhiều animation.
+
+Chỉ cần:
+
+* flip/mở ô
+* fade hiện ảnh
+* highlight nhóm được cộng điểm
+* confetti nhẹ khi đoán đúng
+* chuyển vòng mượt
+
+Phong cách animation nên gọn và lịch sự.
+
+---
+
+# 25. Yêu cầu responsive
+
+Ưu tiên desktop/laptop + TV.
+
+Không cần mobile-first.
+
+Các breakpoint chính:
+
+* 1366x768
+* 1600x900
+* 1920x1080
+
+---
+
+# 26. Acceptance Criteria
+
+## AC-01
+
+Host có thể tạo phiên chơi với ít nhất 2 nhóm.
+
+## AC-02
+
+Game hiển thị đúng 2 sự kiện.
+
+## AC-03
+
+Mỗi sự kiện có 9 ô.
+
+## AC-04
+
+Mỗi ô có thể được chọn và mở popup câu hỏi.
+
+## AC-05
+
+Host có thể chấm đúng/sai thủ công.
+
+## AC-06
+
+Nếu đúng, ô được mở và cộng 10 điểm.
+
+## AC-07
+
+Nếu sai, ô không mở và không cộng điểm.
+
+## AC-08
+
+Host có thể mở popup đoán sự kiện bất cứ lúc nào sau khi đã mở ít nhất 1 ô.
+
+## AC-09
+
+Nếu đoán đúng, hệ thống cộng điểm thưởng theo số ô đã mở.
+
+## AC-10
+
+Sau khi đoán đúng, ảnh được mở toàn bộ và sự kiện được đánh dấu hoàn thành.
+
+## AC-11
+
+Sau sự kiện 1, host có thể chuyển sang sự kiện 2.
+
+## AC-12
+
+Kết thúc 2 sự kiện, hệ thống hiển thị bảng điểm cuối.
+
+## AC-13
+
+Nếu dùng `/host` và `/display`, hai màn hình phải đồng bộ.
+
+## AC-14
+
+Host có thể reset toàn bộ game.
+
+---
+
+# 27. Chỉ dẫn rõ cho Claude khi build
+
+Claude cần tuân thủ đúng các nguyên tắc sau:
+
+1. **Dùng NestJS làm app chính.**
+2. **Không làm hệ thống login.**
+3. **Không làm client riêng cho từng nhóm.**
+4. **Host là người chấm đúng/sai thủ công.**
+5. **Ảnh phải chia theo lưới 3x3 bằng CSS background-position.**
+6. **Phải có bảng điểm realtime.**
+7. **Phải có 2 route riêng: `/host` và `/display`.**
+8. **Nội dung câu hỏi/ảnh/sự kiện phải đọc từ JSON để dễ thay đổi.**
+9. **Ưu tiên code đơn giản, dễ demo, dễ chạy local.**
+10. **Không over-engineer. Bản đầu chỉ cần chạy ổn cho buổi thuyết trình.**
+
+---
+
+# 28. Kết luận
+
+Đây là một website game phục vụ thuyết trình lịch sử trên lớp, không phải game cá nhân nhiều thiết bị.
+
+Trọng tâm của hệ thống là:
+
+* một host điều khiển,
+* một màn hình lớn để hiển thị,
+* cơ chế mở mảnh ghép qua câu hỏi,
+* đoán sự kiện để nhận điểm thưởng,
+* truyền tải nội dung học thuật một cách sinh động.
+
+Nếu build đúng theo tài liệu này, Claude phải tạo ra một ứng dụng:
+
+* đơn giản,
+* dễ vận hành,
+* đẹp khi trình chiếu,
+* phù hợp với bối cảnh lớp học,
+* đủ linh hoạt để thay ảnh và câu hỏi sau này.
+
+Mình cũng có thể viết tiếp cho bạn ngay một bản **“technical prompt cho Claude”** dạng copy-paste, để bạn dán vào Claude là nó code luôn.
