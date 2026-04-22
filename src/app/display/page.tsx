@@ -898,7 +898,8 @@ function DisplayContent() {
                       textAlign: "center",
                     }}
                   >
-                    🎉 Chúc mừng nhóm {state.teams.find((t) => t.id === currentEvent.guessedByTeamId)?.name} đoán được hình ảnh + {currentEvent.guessBonus ?? 0} điểm
+                    🎉 Chúc mừng {state.teams.find((t) => t.id === currentEvent.guessedByTeamId)?.name} đoán được hình
+                    ảnh + {currentEvent.guessBonus ?? 0} điểm
                   </div>
                 )}
               </div>
