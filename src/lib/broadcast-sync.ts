@@ -1,82 +1,102 @@
 // ============================================================
-// BroadcastChannel Sync — đồng bộ host ↔ display
+// Supabase Realtime Sync — đồng bộ host ↔ display qua mạng
+// Thay thế BroadcastChannel (chỉ cùng máy) bằng WebSocket thật
 // ============================================================
 
+import { supabase } from "./supabase";
 import { GameSessionState } from "@/types/game";
 
-const CHANNEL_NAME = "giai-ma-lich-su";
+// Tên channel cố định — host và display phải dùng cùng tên
+const REALTIME_CHANNEL = "giai-ma-lich-su-game";
 
-type MessageType = "STATE_UPDATE" | "REQUEST_STATE" | "PING";
-
-interface BroadcastMessage {
-  type: MessageType;
-  payload?: GameSessionState;
-  timestamp: number;
-  source: "host" | "display";
-}
+type EventName = "state_update" | "request_state";
 
 export function createBroadcastSync(
   role: "host" | "display",
   onStateReceived: (state: GameSessionState) => void,
   onStateRequested?: () => GameSessionState | null
 ) {
+  // SSR guard
   if (typeof window === "undefined") {
     return { broadcastState: () => {}, requestState: () => {}, close: () => {} };
   }
 
-  let channel: BroadcastChannel | null = null;
+  const channel = supabase.channel(REALTIME_CHANNEL, {
+    config: {
+      broadcast: {
+        // self: false → không nhận lại broadcast của chính mình
+        self: false,
+      },
+    },
+  });
 
-  try {
-    channel = new BroadcastChannel(CHANNEL_NAME);
-  } catch {
-    console.warn("[BroadcastSync] BroadcastChannel not supported.");
-    return { broadcastState: () => {}, requestState: () => {}, close: () => {} };
+  // ── DISPLAY: nhận state từ host ──────────────────────────
+  if (role === "display") {
+    channel.on(
+      "broadcast",
+      { event: "state_update" satisfies EventName },
+      ({ payload }) => {
+        if (payload?.state) {
+          onStateReceived(payload.state as GameSessionState);
+        }
+      }
+    );
   }
 
-  channel.onmessage = (event: MessageEvent<BroadcastMessage>) => {
-    const message = event.data;
-    if (message.source === role) return;
-
-    switch (message.type) {
-      case "STATE_UPDATE":
-        if (message.payload) onStateReceived(message.payload);
-        break;
-      case "REQUEST_STATE":
-        if (role === "host" && onStateRequested) {
+  // ── HOST: trả lời yêu cầu state từ display ──────────────
+  if (role === "host") {
+    channel.on(
+      "broadcast",
+      { event: "request_state" satisfies EventName },
+      () => {
+        if (onStateRequested) {
           const currentState = onStateRequested();
           if (currentState) {
-            channel?.postMessage({
-              type: "STATE_UPDATE",
-              payload: currentState,
-              timestamp: Date.now(),
-              source: role,
-            } satisfies BroadcastMessage);
+            channel.send({
+              type: "broadcast",
+              event: "state_update" satisfies EventName,
+              payload: { state: currentState },
+            });
           }
         }
-        break;
-    }
-  };
+      }
+    );
+  }
 
+  // Kết nối channel
+  channel.subscribe((status) => {
+    console.log(`[RealtimeSync:${role}] Channel status:`, status);
+  });
+
+  // ── Public API ─────────────────────────────────────────
   function broadcastState(state: GameSessionState): void {
-    channel?.postMessage({
-      type: "STATE_UPDATE",
-      payload: state,
-      timestamp: Date.now(),
-      source: role,
-    } satisfies BroadcastMessage);
+    if (role !== "host") return;
+    channel.send({
+      type: "broadcast",
+      event: "state_update" satisfies EventName,
+      payload: { state },
+    });
   }
 
   function requestState(): void {
-    channel?.postMessage({
-      type: "REQUEST_STATE",
-      timestamp: Date.now(),
-      source: role,
-    } satisfies BroadcastMessage);
+    if (role !== "display") return;
+    // Thử gửi yêu cầu ngay, và retry sau 1s nếu host chưa sẵn sàng
+    channel.send({
+      type: "broadcast",
+      event: "request_state" satisfies EventName,
+      payload: {},
+    });
+    setTimeout(() => {
+      channel.send({
+        type: "broadcast",
+        event: "request_state" satisfies EventName,
+        payload: {},
+      });
+    }, 1000);
   }
 
   function close(): void {
-    channel?.close();
-    channel = null;
+    supabase.removeChannel(channel);
   }
 
   return { broadcastState, requestState, close };
