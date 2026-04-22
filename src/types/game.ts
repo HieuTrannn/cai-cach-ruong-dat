@@ -59,6 +59,7 @@ export interface EventState {
   answerKeywords: string[];
   isCompleted: boolean;
   guessedByTeamId: string | null;
+  guessBonus: number | null;
   tiles: TileState[];
 }
 

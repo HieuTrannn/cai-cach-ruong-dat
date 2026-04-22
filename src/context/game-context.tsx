@@ -69,6 +69,7 @@ function eventDataToState(eventData: EventData): EventState {
     answerKeywords: eventData.answerKeywords,
     isCompleted: false,
     guessedByTeamId: null,
+    guessBonus: null,
     tiles: eventData.tiles.map((tile) => ({
       ...tile,
       revealed: false,
@@ -372,6 +373,7 @@ export function gameReducer(
             ...evt,
             isCompleted: true,
             guessedByTeamId: teamId,
+            guessBonus: bonus,
             tiles: evt.tiles.map((t) => ({ ...t, revealed: true })),
           };
         });
